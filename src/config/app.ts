@@ -2,7 +2,7 @@
 export const appConfig = {
   // API settings
   api: {
-    baseUrl: 'http://localhost:4000',
+    baseUrl: '', // empty string = same origin, change if server separate
   },
   
   // Script generation settings

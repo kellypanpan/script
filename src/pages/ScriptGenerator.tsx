@@ -10,7 +10,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { generateScript } from '../utils/scriptGenerator';
-import { useUsageLimit, UsageLimitManager } from '../utils/usageLimit';
+// Usage limit disabled
 import { sampleScripts, getRandomScript } from '../data/sampleScripts';
 import appConfig from '../config/app';
 
@@ -28,15 +28,9 @@ const ScriptGenerator: React.FC = () => {
   const [formatted, setFormatted] = useState(false);
   const [rawScript, setRawScript] = useState(''); // Store the original script
   
-  // Usage limit management
-  const { canGenerate, remainingGenerations, timeUntilReset, dailyLimit } = useUsageLimit();
+  // Usage limit disabled
+  const canGenerate = true;
   
-  // Get usage manager for direct calls
-  const tryUseGeneration = () => {
-    const manager = UsageLimitManager.getInstance();
-    return manager.useGeneration();
-  };
-
   // Load sample script
   const loadSampleScript = (index: number) => {
     const script = sampleScripts[index].script;
@@ -202,19 +196,7 @@ const ScriptGenerator: React.FC = () => {
   };
 
   const handleGenerateScript = async () => {
-    // Check usage limit first
-    if (!canGenerate) {
-      alert(`Daily limit reached! You can generate ${dailyLimit} scripts per day. Try again in ${timeUntilReset}.`);
-      return;
-    }
-
-    // Use one generation
-    const usageSuccess = tryUseGeneration();
-    if (!usageSuccess) {
-      alert('Unable to track usage. Please try again.');
-      return;
-    }
-
+    
     setIsGenerating(true);
     setIsLoading(true);
     
@@ -446,24 +428,7 @@ const ScriptGenerator: React.FC = () => {
             </div>
 
             {/* Usage Limit Info */}
-            {remainingGenerations <= 1 && (
-              <div className="mb-4 p-3 bg-orange-50 border border-orange-200 rounded-lg">
-                <div className="flex items-center space-x-2 text-orange-800">
-                  <AlertCircle className="h-4 w-4" />
-                  <span className="text-sm font-medium">
-                    {remainingGenerations === 0 
-                      ? `Daily limit reached! Resets in ${timeUntilReset}` 
-                      : `${remainingGenerations} generation${remainingGenerations === 1 ? '' : 's'} remaining today`
-                    }
-                  </span>
-                </div>
-                {remainingGenerations === 0 && (
-                  <p className="text-sm text-orange-700 mt-1">
-                    Upgrade to Pro for unlimited generations!
-                  </p>
-                )}
-              </div>
-            )}
+            {/* usage limit UI removed */}
 
             {/* Generate Button */}
             <button 
@@ -475,14 +440,7 @@ const ScriptGenerator: React.FC = () => {
               <span>{isGenerating ? 'Generating...' : 'Generate Script'}</span>
             </button>
 
-            {/* Usage counter for normal state */}
-            {remainingGenerations > 1 && (
-              <div className="mt-3 text-center">
-                <p className="text-sm text-gray-500">
-                  {remainingGenerations} of {dailyLimit} daily generations remaining
-                </p>
-              </div>
-            )}
+            {/* usage limit UI removed */}
           </motion.div>
 
           {/* Right: Script Output */}
