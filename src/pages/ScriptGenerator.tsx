@@ -25,6 +25,8 @@ const ScriptGenerator: React.FC = () => {
   const [maxLength, setMaxLength] = useState<'short' | 'default' | 'extended'>('default');
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [formatted, setFormatted] = useState(false);
+  const [rawScript, setRawScript] = useState(''); // Store the original script
   
   // Usage limit management
   const { canGenerate, remainingGenerations, timeUntilReset, dailyLimit } = useUsageLimit();
@@ -37,13 +39,68 @@ const ScriptGenerator: React.FC = () => {
 
   // Load sample script
   const loadSampleScript = (index: number) => {
-    setGeneratedScript(sampleScripts[index].script);
+    const script = sampleScripts[index].script;
+    setRawScript(script);
+    setGeneratedScript(convertScriptFormat(script, outputFormat));
   };
 
   // Generate random sample
   const loadRandomSample = () => {
     const randomScript = getRandomScript();
-    setGeneratedScript(randomScript.script);
+    setRawScript(randomScript.script);
+    setGeneratedScript(convertScriptFormat(randomScript.script, outputFormat));
+  };
+
+  // Convert script format based on output format
+  const convertScriptFormat = (script: string, format: string): string => {
+    if (!script) return script;
+    
+    const lines = script.split('\n').filter(line => line.trim());
+    
+    switch (format) {
+      case 'dialog-only':
+        return lines
+          .filter(line => {
+            const trimmed = line.trim();
+            // Keep character names (ALL CAPS) and dialogue
+            return trimmed.match(/^[A-Z][A-Z\s]+$/) || 
+                   (!trimmed.match(/^(INT\.|EXT\.)/) && 
+                    !trimmed.match(/^\(.+\)$/) && 
+                    !trimmed.match(/^(FADE|CUT|DISSOLVE)/) &&
+                    trimmed.length > 0);
+          })
+          .join('\n');
+          
+      case 'voiceover':
+        return lines
+          .filter(line => {
+            const trimmed = line.trim();
+            // Keep action lines and convert dialogue to narration
+            return !trimmed.match(/^[A-Z][A-Z\s]+$/) && 
+                   !trimmed.match(/^\(.+\)$/) &&
+                   trimmed.length > 0;
+          })
+          .map(line => {
+            // Remove scene headings formatting, make it narrative
+            if (line.match(/^(INT\.|EXT\.)/)) {
+              return line.replace(/^(INT\.|EXT\.\s*)/, '').replace(/\s*–\s*DAY|NIGHT$/i, '');
+            }
+            return line;
+          })
+          .join(' ');
+          
+      case 'shooting-script':
+      default:
+        return script; // Keep original format
+    }
+  };
+
+  // Handle format change
+  const handleFormatChange = (newFormat: string) => {
+    setOutputFormat(newFormat);
+    if (rawScript) {
+      setGeneratedScript(convertScriptFormat(rawScript, newFormat));
+    }
   };
 
   // Export script as TXT file
@@ -177,7 +234,7 @@ const ScriptGenerator: React.FC = () => {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), appConfig.generation.apiTimeout);
           
-          const response = await fetch('/api/generate-script', {
+          const response = await fetch(`${appConfig.api.baseUrl}/api/generate-script`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -190,7 +247,9 @@ const ScriptGenerator: React.FC = () => {
           const data = await response.json();
           
           if (response.ok && data?.script) {
-            setGeneratedScript(data.script);
+            const rawGeneratedScript = data.script;
+            setRawScript(rawGeneratedScript);
+            setGeneratedScript(convertScriptFormat(rawGeneratedScript, outputFormat));
           } else {
             throw new Error('API returned invalid response');
           }
@@ -199,7 +258,8 @@ const ScriptGenerator: React.FC = () => {
           if (appConfig.generation.fallbackToLocal) {
             await new Promise(resolve => setTimeout(resolve, appConfig.generation.localDelay));
             const script = generateScript(scriptInput);
-            setGeneratedScript(script);
+            setRawScript(script);
+            setGeneratedScript(convertScriptFormat(script, outputFormat));
           } else {
             throw apiError;
           }
@@ -208,7 +268,8 @@ const ScriptGenerator: React.FC = () => {
         // Local generation (faster)
         await new Promise(resolve => setTimeout(resolve, appConfig.generation.localDelay));
         const script = generateScript(scriptInput);
-        setGeneratedScript(script);
+        setRawScript(script);
+        setGeneratedScript(convertScriptFormat(script, outputFormat));
       }
       
     } catch (error) {
@@ -482,7 +543,7 @@ const ScriptGenerator: React.FC = () => {
                 ].map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => setOutputFormat(option.value)}
+                    onClick={() => handleFormatChange(option.value)}
                     className={`flex-1 px-3 py-2 text-sm font-medium rounded-md transition-colors ${
                       outputFormat === option.value
                         ? 'bg-white text-gray-900 shadow-sm'
@@ -498,7 +559,7 @@ const ScriptGenerator: React.FC = () => {
             {/* Script Display */}
             <div className="bg-gray-50 border rounded-lg mb-6 h-96 overflow-y-auto">
               <div className="p-6">
-                {generatedScript ? (
+                {formatted ? (
                   <div 
                     className="screenplay-format text-sm leading-relaxed text-gray-900"
                     style={{
@@ -507,7 +568,7 @@ const ScriptGenerator: React.FC = () => {
                       whiteSpace: 'pre-wrap'
                     }}
                   >
-                    {formatScriptForDisplay(generatedScript)}
+                    {formatScriptForDisplay(generatedScript || '')}
                   </div>
                 ) : (
                   <div className="text-center text-gray-500 py-20">
@@ -517,6 +578,16 @@ const ScriptGenerator: React.FC = () => {
                   </div>
                 )}
               </div>
+            </div>
+
+            {/* Format toggle */}
+            <div className="mb-4">
+              <button
+                onClick={() => setFormatted((prev) => !prev)}
+                className="px-4 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-100 transition-colors"
+              >
+                {formatted ? 'Show Raw Text' : 'Format Script'}
+              </button>
             </div>
 
             {/* Audio Preview */}

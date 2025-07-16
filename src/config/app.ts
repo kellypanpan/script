@@ -1,5 +1,10 @@
 // Application configuration
 export const appConfig = {
+  // API settings
+  api: {
+    baseUrl: 'http://localhost:4000',
+  },
+  
   // Script generation settings
   generation: {
     // Set to true when API backend is ready
