@@ -219,6 +219,7 @@ const ScriptGenerator: React.FC = () => {
         // API call implementation
         try {
           console.log('🌐 Attempting API call...');
+          console.log('⏳ AI generation may take 15-30 seconds...');
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), appConfig.generation.apiTimeout);
           
@@ -247,15 +248,31 @@ const ScriptGenerator: React.FC = () => {
           }
         } catch (apiError) {
           console.log('❌ API failed, using local generation:', apiError);
+          
+          // 提供更详细的错误信息
+          let errorMessage = 'API request failed';
+          if (apiError instanceof Error) {
+            if (apiError.name === 'AbortError') {
+              errorMessage = 'API request timed out (>30s)';
+            } else if (apiError.message.includes('Failed to fetch')) {
+              errorMessage = 'Network connection failed';
+            } else {
+              errorMessage = apiError.message;
+            }
+          }
+          
+          console.log('🔍 Error details:', errorMessage);
+          
           if (appConfig.generation.fallbackToLocal) {
             console.log('🔄 Falling back to local generation...');
+            // 显示一个临时提示，让用户知道正在fallback
             await new Promise(resolve => setTimeout(resolve, appConfig.generation.localDelay));
             const script = generateScript(scriptInput);
             console.log('✅ Local generation success! Script length:', script.length);
             setRawScript(script);
             setGeneratedScript(convertScriptFormat(script, outputFormat));
           } else {
-            throw apiError;
+            throw new Error(`API Error: ${errorMessage}`);
           }
         }
       } else {
@@ -462,7 +479,7 @@ const ScriptGenerator: React.FC = () => {
               className="w-full bg-[#1a73e8] text-white p-4 rounded-md text-lg font-semibold hover:bg-[#185abc] transition-colors flex items-center justify-center space-x-2 focus:outline-none focus:ring-2 focus:ring-[#1a73e8]/50 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Sparkles className="h-5 w-5" />
-              <span>{isGenerating ? 'Generating...' : 'Generate Script'}</span>
+              <span>{isGenerating ? (appConfig.generation.useAPI ? 'AI Writing Script...' : 'Generating...') : 'Generate Script'}</span>
             </button>
 
             {/* usage limit UI removed */}

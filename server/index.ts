@@ -44,7 +44,11 @@ async function callClaude({ model, messages, max_tokens, temperature }: {
     },
     body: JSON.stringify({ model, messages, max_tokens, temperature }),
   });
-  if (!res.ok) throw new Error(`Claude API error ${res.status}`);
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error(`OpenRouter API Error ${res.status}:`, errorText);
+    throw new Error(`OpenRouter API error ${res.status}: ${errorText}`);
+  }
   const data = await res.json();
   return data;
 }

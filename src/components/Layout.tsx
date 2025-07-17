@@ -15,6 +15,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     { name: 'Generate', href: '/generate' },
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Pricing', href: '/pricing' },
+    { name: 'Blog', href: '/blog' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -113,6 +114,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 <li><Link to="/generate" className="hover:text-white">Script Generator</Link></li>
                 <li><Link to="/dashboard" className="hover:text-white">Dashboard</Link></li>
                 <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
+                <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
               </ul>
             </div>
             <div>

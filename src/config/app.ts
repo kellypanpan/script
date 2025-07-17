@@ -13,8 +13,8 @@ export const appConfig = {
     // Local generation delay (ms) for better UX
     localDelay: 800,
     
-    // API timeout (ms)
-    apiTimeout: 10000,
+    // API timeout (ms) - AI generation can take 15-30 seconds
+    apiTimeout: 30000,
     
     // Fallback to local if API fails
     fallbackToLocal: true
