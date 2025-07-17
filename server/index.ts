@@ -18,7 +18,8 @@ const ScriptInputSchema = z.object({
   tone: z.enum(['casual', 'professional', 'humorous', 'dramatic']),
   extra: z.string().optional(),
   maxLength: z.enum(['short', 'default', 'extended']).default('default'),
-  mode: z.enum(['dialog-only', 'voiceover', 'shooting-script']).optional()
+  mode: z.enum(['dialog-only', 'voiceover', 'shooting-script']).optional(),
+  platform: z.enum(['tiktok', 'reels', 'youtube', 'general']).default('general')
 });
 
 const TOKEN_LIMIT: Record<'short' | 'default' | 'extended', number> = {
@@ -91,13 +92,14 @@ Your output should be predictable, elegant, and production-ready.`;
     const userPrompt = `Generate a ${parsed.mode || 'shooting-script'} script with these parameters:
 
 Genre: ${parsed.genre}
+Platform: ${parsed.platform} (optimize for this platform's requirements)
 Keywords: ${parsed.keywords || 'general story'}
 Characters: ${parsed.characters.join(', ') || 'Alex, Jordan'}
 Tone: ${parsed.tone}
 Length: ${parsed.maxLength}
 Extra: ${parsed.extra || 'none'}
 
-Please create an engaging, professional script that matches these requirements.`;
+Please create an engaging, professional script that matches these requirements and is optimized for ${parsed.platform} format.`;
 
     const ai = await callClaude({
       model: 'anthropic/claude-sonnet-4',

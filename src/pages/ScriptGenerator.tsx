@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, 
@@ -24,10 +24,15 @@ const ScriptGenerator: React.FC = () => {
   const [newCharacter, setNewCharacter] = useState('');
   const [generatedScript, setGeneratedScript] = useState('');
   const [maxLength, setMaxLength] = useState<'short' | 'default' | 'extended'>('default');
+  const [platform, setPlatform] = useState<'tiktok' | 'reels' | 'youtube' | 'general'>('general');
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [progress, setProgress] = useState(0);
+  const progressTimer = useRef<NodeJS.Timeout | null>(null);
   const [formatted, setFormatted] = useState(false);
   const [rawScript, setRawScript] = useState(''); // Store the original script
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
   
   // Usage limit disabled
   const canGenerate = true;
@@ -196,13 +201,142 @@ const ScriptGenerator: React.FC = () => {
     setCharacters(characters.filter(c => c !== character));
   };
 
+  // Handle audio preview
+  const handleAudioPreview = async () => {
+    if (!generatedScript) {
+      alert('Please generate a script first!');
+      return;
+    }
+
+    if (isPlayingAudio) {
+      // Stop current audio
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      // Stop speech synthesis
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    try {
+      setIsPlayingAudio(true);
+      
+      // Extract dialogue from script for TTS
+      const scriptForTTS = extractDialogueForTTS(generatedScript);
+      
+      console.log('🔊 Generating audio preview...');
+      
+      // Try Google Cloud TTS first, fallback to Web Speech API
+      try {
+        const response = await fetch(`${appConfig.api.baseUrl}/api/generate-audio`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            text: scriptForTTS,
+            languageCode: 'en-US',
+            voiceName: 'en-US-Wavenet-D',
+            speakingRate: 1.1
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          
+          if (data.success && data.audioContent) {
+            // Create audio element and play
+            const audioBlob = new Blob([
+              Uint8Array.from(atob(data.audioContent), c => c.charCodeAt(0))
+            ], { type: 'audio/mp3' });
+            
+            const audioUrl = URL.createObjectURL(audioBlob);
+            
+            if (audioRef.current) {
+              audioRef.current.src = audioUrl;
+              audioRef.current.onended = () => setIsPlayingAudio(false);
+              await audioRef.current.play();
+              return; // Success, don't fallback
+            }
+          }
+        }
+        
+        throw new Error('Google TTS not available');
+      } catch (gcloudError) {
+        console.log('Google TTS failed, using browser TTS:', gcloudError);
+        
+        // Fallback to Web Speech API
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance(scriptForTTS);
+          utterance.rate = 1.1;
+          utterance.pitch = 1.0;
+          utterance.volume = 0.8;
+          
+          utterance.onend = () => setIsPlayingAudio(false);
+          utterance.onerror = () => {
+            setIsPlayingAudio(false);
+            throw new Error('Speech synthesis failed');
+          };
+          
+          window.speechSynthesis.speak(utterance);
+          console.log('✅ Using browser speech synthesis');
+        } else {
+          throw new Error('No TTS options available');
+        }
+      }
+    } catch (error) {
+      console.error('Audio preview error:', error);
+      alert(`Audio preview failed: ${error instanceof Error ? error.message : 'Unknown error'}\n\nNote: For better quality audio, configure Google Cloud TTS API key in the backend.`);
+      setIsPlayingAudio(false);
+    }
+  };
+
+  // Extract dialogue for TTS (remove action lines, keep dialogue)
+  const extractDialogueForTTS = (script: string): string => {
+    const lines = script.split('\n');
+    const dialogueLines: string[] = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      
+      // Skip empty lines, scene headings, action lines
+      if (!line || line.match(/^(INT\.|EXT\.|FADE|CUT)/i)) continue;
+      
+      // Character names (ALL CAPS)
+      if (line.match(/^[A-Z][A-Z\s]+$/) && line.length < 30) {
+        // Look ahead for dialogue
+        const nextLine = lines[i + 1]?.trim();
+        if (nextLine && !nextLine.match(/^[A-Z][A-Z\s]+$/)) {
+          dialogueLines.push(`${line} says:`);
+        }
+        continue;
+      }
+      
+      // Dialogue lines (not action descriptions)
+      if (line && !line.match(/^[A-Z][A-Z\s]+$/) && !line.includes('(') && !line.includes(')')) {
+        dialogueLines.push(line);
+      }
+    }
+    
+    return dialogueLines.join(' ').substring(0, 500); // Limit to 500 chars for demo
+  };
+
   const handleGenerateScript = async () => {
     console.log('🎬 Starting script generation...');
     console.log('Config:', { useAPI: appConfig.generation.useAPI, baseUrl: appConfig.api.baseUrl });
     
     setIsGenerating(true);
     setIsLoading(true);
-    
+    setProgress(0);
+    // Simulate progress while waiting for API (will go up to 90%)
+    progressTimer.current && clearInterval(progressTimer.current);
+    progressTimer.current = setInterval(() => {
+      setProgress((prev) => (prev < 90 ? prev + 3 : prev));
+    }, 500);
+
     try {
       const scriptInput = {
         genre,
@@ -210,7 +344,8 @@ const ScriptGenerator: React.FC = () => {
         characters,
         tone,
         maxLength,
-        mode: outputFormat as 'dialog-only' | 'voiceover' | 'shooting-script'
+        mode: outputFormat as 'dialog-only' | 'voiceover' | 'shooting-script',
+        platform
       };
       
       console.log('📝 Script input:', scriptInput);
@@ -291,8 +426,12 @@ const ScriptGenerator: React.FC = () => {
       console.error('💥 Script generation error:', error);
       alert(`Failed to generate script: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
+      progressTimer.current && clearInterval(progressTimer.current!);
+      setProgress(100);
       setIsLoading(false);
       setIsGenerating(false);
+      // reset progress after small delay so bar hides smoothly next time
+      setTimeout(() => setProgress(0), 400);
     }
   };
 
@@ -338,6 +477,34 @@ const ScriptGenerator: React.FC = () => {
                 <option value="action">Action</option>
                 <option value="documentary">Documentary</option>
               </select>
+            </div>
+
+            {/* Platform Selector */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Platform Target
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { value: 'tiktok', label: 'TikTok', desc: '15-60s vertical' },
+                  { value: 'reels', label: 'Instagram Reels', desc: '15-90s vertical' },
+                  { value: 'youtube', label: 'YouTube Shorts', desc: '15-60s vertical' },
+                  { value: 'general', label: 'General Short Film', desc: '1-5min any format' }
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setPlatform(option.value as 'tiktok' | 'reels' | 'youtube' | 'general')}
+                    className={`p-3 rounded-lg border text-sm transition-colors ${
+                      platform === option.value
+                        ? 'bg-blue-50 border-blue-500 text-blue-700'
+                        : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="font-medium">{option.label}</div>
+                    <div className="text-xs opacity-75">{option.desc}</div>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Keywords Textarea */}
@@ -605,10 +772,21 @@ const ScriptGenerator: React.FC = () => {
 
             {/* Audio Preview */}
             <div className="mb-6">
-              <button className="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-medium hover:bg-green-200 transition-colors flex items-center space-x-2">
+              <button 
+                onClick={handleAudioPreview}
+                disabled={!generatedScript}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed ${
+                  isPlayingAudio 
+                    ? 'bg-red-100 text-red-800 hover:bg-red-200' 
+                    : 'bg-green-100 text-green-800 hover:bg-green-200'
+                }`}
+              >
                 <Volume2 className="h-4 w-4" />
-                <span>🔊 Preview Audio</span>
+                <span>
+                  {isPlayingAudio ? '⏹️ Stop Audio' : '🔊 Preview Audio'}
+                </span>
               </button>
+              <audio ref={audioRef} style={{ display: 'none' }} />
             </div>
 
             {/* Export Buttons */}
@@ -659,11 +837,18 @@ const ScriptGenerator: React.FC = () => {
           <motion.div
             key="loader"
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
+            animate={{ opacity: 0.8 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 bg-white flex items-center justify-center"
+            className="absolute inset-0 bg-white flex flex-col items-center justify-center space-y-6"
           >
-            <div className="animate-spin rounded-full h-12 w-12 border-4 border-[#1a73e8] border-t-transparent"></div>
+            <p className="text-lg font-medium text-gray-700">Generating your script…</p>
+            <div className="w-64 bg-gray-200 rounded-full h-3 overflow-hidden">
+              <div
+                className="bg-blue-600 h-3 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              ></div>
+            </div>
+            <p className="text-sm text-gray-500">This usually takes about 15–20 seconds</p>
           </motion.div>
         )}
       </AnimatePresence>

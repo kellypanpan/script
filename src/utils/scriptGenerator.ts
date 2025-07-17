@@ -6,6 +6,7 @@ interface ScriptInput {
   extra?: string;
   maxLength?: "short" | "default" | "extended";
   mode?: "dialog-only" | "voiceover" | "shooting-script";
+  platform?: "tiktok" | "reels" | "youtube" | "general";
 }
 
 interface Character {
@@ -67,14 +68,30 @@ export class ScriptGenerator {
   };
 
   generate(input: ScriptInput): string {
-    const maxWords = this.wordLimits[input.maxLength || "default"];
+    let maxWords = this.wordLimits[input.maxLength || "default"];
     const mode = input.mode || "shooting-script";
+    const platform = input.platform || "general";
     
-    const script = this.buildScript(input, maxWords);
-    return this.formatScript(script, mode);
+    // Adjust word limits based on platform
+    maxWords = this.adjustForPlatform(maxWords, platform);
+    
+    const script = this.buildScript(input, maxWords, platform);
+    return this.formatScript(script, mode, platform);
   }
 
-  private buildScript(input: ScriptInput, maxWords: number): ScriptLine[] {
+  private adjustForPlatform(maxWords: number, platform: string): number {
+    const platformLimits = {
+      tiktok: { multiplier: 0.6, max: 400 },    // Shorter, punchier content
+      reels: { multiplier: 0.7, max: 500 },     // Slightly longer than TikTok
+      youtube: { multiplier: 0.8, max: 600 },   // Can be a bit longer
+      general: { multiplier: 1.0, max: 2000 }   // No restriction
+    };
+    
+    const config = platformLimits[platform as keyof typeof platformLimits] || platformLimits.general;
+    return Math.min(Math.floor(maxWords * config.multiplier), config.max);
+  }
+
+  private buildScript(input: ScriptInput, maxWords: number, platform: string = "general"): ScriptLine[] {
     const lines: ScriptLine[] = [];
     const template = this.genreTemplates[input.genre as keyof typeof this.genreTemplates] || this.genreTemplates.comedy;
     
@@ -87,7 +104,7 @@ export class ScriptGenerator {
     const characters = this.setupCharacters(input.characters);
     
     // Generate story beats
-    const beats = this.generateStoryBeats(input, template, characters, maxWords);
+    const beats = this.generateStoryBeats(input, template, characters, maxWords, platform);
     
     // Convert beats to script lines
     for (const beat of beats) {
@@ -181,17 +198,25 @@ export class ScriptGenerator {
     return descriptions[Math.floor(Math.random() * descriptions.length)];
   }
 
-  private generateStoryBeats(input: ScriptInput, template: typeof this.genreTemplates.comedy, characters: Character[], maxWords: number): StoryBeat[] {
+  private generateStoryBeats(input: ScriptInput, template: typeof this.genreTemplates.comedy, characters: Character[], maxWords: number, platform: string = "general"): StoryBeat[] {
     const beats = [];
     
-    // Determine number of beats based on script length
+    // Determine number of beats based on script length and platform
     let targetBeats = 3; // default
+    
+    // Platform-specific beat adjustments
+    if (platform === "tiktok" || platform === "reels") {
+      targetBeats = Math.min(targetBeats, 2); // Keep it snappy for short-form
+    } else if (platform === "youtube") {
+      targetBeats = Math.min(targetBeats, 3); // Slightly more room
+    }
+    
     if (maxWords <= 300) {
       targetBeats = 2; // short: just setup and resolution
     } else if (maxWords >= 1200) {
-      targetBeats = 5; // extended: setup, conflict, climax, twist, resolution
+      targetBeats = Math.min(5, targetBeats + 2); // extended: setup, conflict, climax, twist, resolution
     } else {
-      targetBeats = 3; // default: setup, conflict, resolution
+      targetBeats = Math.max(2, targetBeats); // default: setup, conflict, resolution
     }
     
     // Opening beat (always present)
@@ -566,16 +591,35 @@ export class ScriptGenerator {
     return lines;
   }
 
-  private formatScript(lines: ScriptLine[], mode: string): string {
+  private formatScript(lines: ScriptLine[], mode: string, platform: string = "general"): string {
+    let formattedScript = "";
+    
     switch (mode) {
       case "dialog-only":
-        return this.formatDialogOnly(lines);
+        formattedScript = this.formatDialogOnly(lines);
+        break;
       case "voiceover":
-        return this.formatVoiceover(lines);
+        formattedScript = this.formatVoiceover(lines);
+        break;
       case "shooting-script":
       default:
-        return this.formatShootingScript(lines);
+        formattedScript = this.formatShootingScript(lines);
+        break;
     }
+    
+    // Add platform-specific formatting hints
+    return this.addPlatformHints(formattedScript, platform);
+  }
+
+  private addPlatformHints(script: string, platform: string): string {
+    const platformHints = {
+      tiktok: "\n\n// TikTok Tips:\n// • Keep first 3 seconds engaging\n// • Use trending sounds/music\n// • Add captions for accessibility\n// • Vertical 9:16 aspect ratio",
+      reels: "\n\n// Instagram Reels Tips:\n// • Hook viewers in first 3 seconds\n// • Use popular hashtags\n// • Add text overlays for key points\n// • Vertical format works best",
+      youtube: "\n\n// YouTube Shorts Tips:\n// • Strong opening hook\n// • Include call-to-action\n// • Use engaging thumbnails\n// • Vertical or square format",
+      general: ""
+    };
+    
+    return script + (platformHints[platform as keyof typeof platformHints] || "");
   }
 
   private formatDialogOnly(lines: ScriptLine[]): string {
