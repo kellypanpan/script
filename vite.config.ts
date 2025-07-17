@@ -8,8 +8,19 @@ export default defineConfig({
     exclude: ['lucide-react'],
   },
   server: {
+    port: 5173,
     proxy: {
       '/api': 'http://localhost:4000'
+    },
+    fs: {
+      strict: false
     }
   },
+  build: {
+    target: 'esnext',
+    modulePreload: false
+  },
+  esbuild: {
+    target: 'esnext'
+  }
 });
