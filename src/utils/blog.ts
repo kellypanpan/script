@@ -1,3 +1,10 @@
+// Ensure Buffer exists in browser before any library uses it
+import { Buffer as PolyBuffer } from 'buffer';
+if (typeof globalThis.Buffer === 'undefined') {
+  // @ts-ignore
+  globalThis.Buffer = PolyBuffer;
+}
+
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore gray-matter types installed at runtime
 import matter from 'gray-matter';
@@ -10,7 +17,7 @@ export interface BlogPost {
 }
 
 // Load all markdown files under src/content/blog at build time (Vite glob eager)
-const modules = import.meta.glob('/src/content/blog/*.md', { as: 'raw', eager: true });
+const modules = import.meta.glob('../content/blog/*.md', { as: 'raw', eager: true });
 
 const posts: BlogPost[] = Object.entries(modules).map(([path, raw]) => {
   const { data, content } = matter(raw as string);
