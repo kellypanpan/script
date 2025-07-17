@@ -21,7 +21,14 @@ export default function BlogPost() {
     <div className="max-w-3xl mx-auto py-12 px-4 prose prose-lg prose-blue dark:prose-invert">
       <h1>{post.title}</h1>
       <p className="text-sm text-gray-500">{new Date(post.date).toDateString()}</p>
-      <ReactMarkdown>{post.content}</ReactMarkdown>
+      {post.image && (
+        <img
+          src={post.image}
+          alt={post.title}
+          className="w-full h-64 object-cover rounded-xl mb-6"
+        />
+      )}
+      <ReactMarkdown components={{ h1: () => null }}>{post.content}</ReactMarkdown>
       <div className="mt-12 border-t pt-8">
         <a
           href="https://ReadyScriptPro.com"

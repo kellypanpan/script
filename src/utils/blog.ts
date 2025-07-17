@@ -13,6 +13,7 @@ export interface BlogPost {
   slug: string;
   title: string;
   date: string;
+  image?: string;
   content: string;
 }
 
@@ -26,6 +27,7 @@ const posts: BlogPost[] = Object.entries(modules).map(([path, raw]) => {
     slug,
     title: data.title || slug,
     date: data.date || '1970-01-01',
+    image: data.image || undefined,
     content,
   } as BlogPost;
 }).sort((a, b) => (a.date > b.date ? -1 : 1));

@@ -25,10 +25,6 @@ const Landing: React.FC = () => {
                 <span>Try It Free</span>
                 <ArrowRight className="h-5 w-5" />
               </Link>
-              <button className="border-2 border-white/30 hover:border-white/60 text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all duration-200 flex items-center justify-center space-x-2">
-                <Play className="h-5 w-5" />
-                <span>Watch Demo</span>
-              </button>
             </div>
           </div>
         </div>
