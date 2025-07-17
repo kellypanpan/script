@@ -13,6 +13,7 @@ import { generateScript } from '../utils/scriptGenerator';
 // Usage limit disabled
 import { sampleScripts, getRandomScript } from '../data/sampleScripts';
 import appConfig from '../config/app';
+import { shortFilmIdeas } from '../data/shortFilmIdeas';
 
 const ScriptGenerator: React.FC = () => {
   const [genre, setGenre] = useState('comedy');
@@ -196,6 +197,8 @@ const ScriptGenerator: React.FC = () => {
   };
 
   const handleGenerateScript = async () => {
+    console.log('🎬 Starting script generation...');
+    console.log('Config:', { useAPI: appConfig.generation.useAPI, baseUrl: appConfig.api.baseUrl });
     
     setIsGenerating(true);
     setIsLoading(true);
@@ -210,9 +213,12 @@ const ScriptGenerator: React.FC = () => {
         mode: outputFormat as 'dialog-only' | 'voiceover' | 'shooting-script'
       };
       
+      console.log('📝 Script input:', scriptInput);
+      
       if (appConfig.generation.useAPI) {
         // API call implementation
         try {
+          console.log('🌐 Attempting API call...');
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), appConfig.generation.apiTimeout);
           
@@ -226,20 +232,26 @@ const ScriptGenerator: React.FC = () => {
           });
           
           clearTimeout(timeoutId);
+          console.log('📡 Response status:', response.status);
+          
           const data = await response.json();
+          console.log('📄 Response data:', data);
           
           if (response.ok && data?.script) {
             const rawGeneratedScript = data.script;
+            console.log('✅ API Success! Script length:', rawGeneratedScript.length);
             setRawScript(rawGeneratedScript);
             setGeneratedScript(convertScriptFormat(rawGeneratedScript, outputFormat));
           } else {
-            throw new Error('API returned invalid response');
+            throw new Error(`API returned invalid response: ${JSON.stringify(data)}`);
           }
         } catch (apiError) {
-          console.log('API failed, using local generation:', apiError);
+          console.log('❌ API failed, using local generation:', apiError);
           if (appConfig.generation.fallbackToLocal) {
+            console.log('🔄 Falling back to local generation...');
             await new Promise(resolve => setTimeout(resolve, appConfig.generation.localDelay));
             const script = generateScript(scriptInput);
+            console.log('✅ Local generation success! Script length:', script.length);
             setRawScript(script);
             setGeneratedScript(convertScriptFormat(script, outputFormat));
           } else {
@@ -248,15 +260,19 @@ const ScriptGenerator: React.FC = () => {
         }
       } else {
         // Local generation (faster)
+        console.log('🏠 Using local generation...');
         await new Promise(resolve => setTimeout(resolve, appConfig.generation.localDelay));
         const script = generateScript(scriptInput);
+        console.log('✅ Local generation success! Script length:', script.length);
         setRawScript(script);
         setGeneratedScript(convertScriptFormat(script, outputFormat));
       }
       
+      console.log('🎉 Script generation completed successfully!');
+      
     } catch (error) {
-      console.error('Script generation error:', error);
-      alert('Failed to generate script. Please try again.');
+      console.error('💥 Script generation error:', error);
+      alert(`Failed to generate script: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setIsLoading(false);
       setIsGenerating(false);
@@ -273,8 +289,8 @@ const ScriptGenerator: React.FC = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Script Generator</h1>
-          <p className="text-gray-600">Your shoot-ready screenplay assistant.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">ReadyScriptPro</h1>
+          <p className="text-gray-600">Not just a script — a camera-ready screenplay.</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -312,12 +328,21 @@ const ScriptGenerator: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Keywords & Concept
               </label>
-              <textarea
+              <div className="flex items-start gap-2">
+                <textarea
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg h-24 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Describe your story idea, setting, conflict, or key plot points..."
               />
+                <button
+                  type="button"
+                  onClick={() => setKeywords(shortFilmIdeas[Math.floor(Math.random() * shortFilmIdeas.length)])}
+                  className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm whitespace-nowrap"
+                >
+                  Suggest Idea
+                </button>
+              </div>
             </div>
 
             {/* Characters */}
@@ -517,17 +542,30 @@ const ScriptGenerator: React.FC = () => {
             {/* Script Display */}
             <div className="bg-gray-50 border rounded-lg mb-6 h-96 overflow-y-auto">
               <div className="p-6">
-                {formatted ? (
-                  <div 
-                    className="screenplay-format text-sm leading-relaxed text-gray-900"
-                    style={{
-                      fontFamily: 'Courier New, monospace',
-                      lineHeight: '1.6',
-                      whiteSpace: 'pre-wrap'
-                    }}
-                  >
-                    {formatScriptForDisplay(generatedScript || '')}
-                  </div>
+                {generatedScript ? (
+                  formatted ? (
+                    <div 
+                      className="screenplay-format text-sm leading-relaxed text-gray-900"
+                      style={{
+                        fontFamily: 'Courier New, monospace',
+                        lineHeight: '1.6',
+                        whiteSpace: 'pre-wrap'
+                      }}
+                    >
+                      {formatScriptForDisplay(generatedScript)}
+                    </div>
+                  ) : (
+                    <div 
+                      className="text-sm leading-relaxed text-gray-900"
+                      style={{
+                        fontFamily: 'Courier New, monospace',
+                        lineHeight: '1.6',
+                        whiteSpace: 'pre-wrap'
+                      }}
+                    >
+                      {generatedScript}
+                    </div>
+                  )
                 ) : (
                   <div className="text-center text-gray-500 py-20">
                     <Sparkles className="h-12 w-12 mx-auto mb-4 text-gray-400" />

@@ -5,6 +5,8 @@ import Landing from './pages/Landing';
 import ScriptGenerator from './pages/ScriptGenerator';
 import Dashboard from './pages/Dashboard';
 import Pricing from './pages/Pricing';
+import BlogList from './pages/BlogList';
+import BlogPost from './pages/BlogPost';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
           <Route path="/generate" element={<ScriptGenerator />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/blog" element={<BlogList />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
         </Routes>
       </Layout>
     </Router>

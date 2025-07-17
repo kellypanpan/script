@@ -54,7 +54,7 @@ app.post('/api/generate-script', async (req, res) => {
     const parsed = ScriptInputSchema.parse(req.body);
     const safeMaxTokens = TOKEN_LIMIT[parsed.maxLength] ?? 1000;
 
-    const systemPrompt = `You are the backend AI agent powering the script generation engine of **ScriptProShot**, a SaaS tool that helps creators and studios generate short film scripts that are "camera-ready" – meaning immediately usable for filming.
+    const systemPrompt = `You are the backend AI agent powering the script generation engine of **ReadyScriptPro**, a SaaS tool that helps creators and studios generate short film scripts that are "camera-ready" – meaning immediately usable for filming.
 
 ### 🎯 Goal:
 Generate structured, concise, and professional short film scripts based on structured JSON input. The output should follow standard screenplay formatting and be optimized for fast viewing, editing, or exporting.

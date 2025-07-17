@@ -7,7 +7,7 @@ const Pricing: React.FC = () => {
       name: 'Free',
       price: '$0',
       period: 'forever',
-      description: 'Perfect for trying out ScriptProShot',
+      description: 'Perfect for trying out ReadyScriptPro',
       icon: Zap,
       features: [
         '3 scripts per day',

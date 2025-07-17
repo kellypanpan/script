@@ -126,7 +126,7 @@ const Landing: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              See ScriptProShot in action
+              See ReadyScriptPro in action
             </h2>
             <p className="text-xl text-gray-600">
               Try our AI script generator with a sample prompt
@@ -184,7 +184,7 @@ const Landing: React.FC = () => {
             Start writing your next shoot-ready script today
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            Join thousands of content creators who trust ScriptProShot for professional screenplay generation
+            Join thousands of content creators who trust ReadyScriptPro for professional screenplay generation
           </p>
           <Link
             to="/generate"

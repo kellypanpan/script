@@ -2,13 +2,13 @@
 export const appConfig = {
   // API settings
   api: {
-    baseUrl: '', // empty string = same origin, change if server separate
+    baseUrl: 'http://localhost:4000', // Backend server URL
   },
   
   // Script generation settings
   generation: {
     // Set to true when API backend is ready
-    useAPI: true,
+    useAPI: true, // 启用AI API生成
     
     // Local generation delay (ms) for better UX
     localDelay: 800,

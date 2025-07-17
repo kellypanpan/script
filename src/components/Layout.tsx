@@ -28,7 +28,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="flex items-center">
               <Link to="/" className="flex items-center space-x-2">
                 <Film className="h-8 w-8 text-blue-600" />
-                <span className="font-bold text-xl text-gray-900">ScriptProShot</span>
+                <span className="font-bold text-xl text-gray-900">ReadyScriptPro</span>
               </Link>
             </div>
 
@@ -100,10 +100,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center space-x-2 mb-4">
                 <Film className="h-8 w-8 text-blue-400" />
-                <span className="font-bold text-xl">ScriptProShot</span>
+                <span className="font-bold text-xl">ReadyScriptPro</span>
               </div>
               <p className="text-gray-300 max-w-md">
-                Generate shoot-ready short film scripts with AI. Perfect for content creators, 
+                Not just a script — a camera-ready screenplay. Perfect for content creators, 
                 video producers, and film students.
               </p>
             </div>
@@ -125,7 +125,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
-            <p>&copy; 2025 ScriptProShot. All rights reserved.</p>
+            <p>&copy; 2025 ReadyScriptPro. All rights reserved.</p>
           </div>
         </div>
       </footer>
