@@ -513,7 +513,7 @@ const ScriptGenerator: React.FC = () => {
                 Keywords & Concept
               </label>
               <div className="flex items-start gap-2">
-                <textarea
+              <textarea
                 value={keywords}
                 onChange={(e) => setKeywords(e.target.value)}
                 className="w-full p-3 border border-gray-300 rounded-lg h-24 resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -552,24 +552,24 @@ const ScriptGenerator: React.FC = () => {
               </div>
               <div className="flex flex-wrap gap-2">
                 <AnimatePresence>
-                  {characters.map((character) => (
+                {characters.map((character) => (
                     <motion.span
-                      key={character}
+                    key={character}
                       initial={{ scale: 0.8, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       exit={{ scale: 0.8, opacity: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+                    className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm flex items-center gap-1"
+                  >
+                    {character}
+                    <button
+                      onClick={() => removeCharacter(character)}
+                      className="text-blue-600 hover:text-blue-800"
                     >
-                      {character}
-                      <button
-                        onClick={() => removeCharacter(character)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        ×
-                      </button>
+                      ×
+                    </button>
                     </motion.span>
-                  ))}
+                ))}
                 </AnimatePresence>
               </div>
             </div>
@@ -847,7 +847,7 @@ const ScriptGenerator: React.FC = () => {
                 className="bg-blue-600 h-3 rounded-full transition-all duration-300"
                 style={{ width: `${progress}%` }}
               ></div>
-            </div>
+    </div>
             <p className="text-sm text-gray-500">This usually takes about 15–20 seconds</p>
           </motion.div>
         )}
