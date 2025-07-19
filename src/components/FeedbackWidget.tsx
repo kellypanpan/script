@@ -22,8 +22,8 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
     setIsSubmitting(true);
 
     try {
-      // 这里可以集成实际的反馈API
-      await new Promise(resolve => setTimeout(resolve, 1000)); // 模拟API调用
+      // Integrate with actual feedback API here
+      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
       
       console.log('Feedback submitted:', {
         type: feedbackType,
@@ -69,7 +69,7 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
             {!isSubmitted ? (
               <>
                 <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900">发送反馈</h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Send Feedback</h3>
                   <button
                     onClick={() => setIsOpen(false)}
                     className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -79,10 +79,10 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* 反馈类型选择 */}
+                  {/* Feedback Type Selection */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      反馈类型
+                      Feedback Type
                     </label>
                     <div className="space-y-2">
                       {feedbackTypes.map((type) => (
@@ -102,10 +102,10 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
                     </div>
                   </div>
 
-                  {/* 评分 */}
+                  {/* Rating */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      整体满意度 (可选)
+                      Overall Satisfaction (Optional)
                     </label>
                     <div className="flex space-x-1">
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -127,25 +127,25 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
                     </div>
                   </div>
 
-                  {/* 反馈内容 */}
+                  {/* Feedback Content */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      反馈内容 *
+                      Feedback Content *
                     </label>
                     <textarea
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       rows={4}
-                      placeholder="请详细描述您的问题、建议或意见..."
+                      placeholder="Please describe your issue, suggestion, or feedback in detail..."
                       required
                     />
                   </div>
 
-                  {/* 邮箱 (可选) */}
+                  {/* Email (Optional) */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      联系邮箱 (可选)
+                      Contact Email (Optional)
                     </label>
                     <input
                       type="email"
@@ -155,11 +155,11 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
                       placeholder="your@email.com"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      如需回复，请留下邮箱
+                      Leave your email if you need a reply
                     </p>
                   </div>
 
-                  {/* 提交按钮 */}
+                  {/* Submit Button */}
                   <button
                     type="submit"
                     disabled={!message.trim() || isSubmitting}
@@ -168,12 +168,12 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
                     {isSubmitting ? (
                       <>
                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                        <span>发送中...</span>
+                        <span>Sending...</span>
                       </>
                     ) : (
                       <>
                         <Send className="h-4 w-4" />
-                        <span>发送反馈</span>
+                        <span>Send Feedback</span>
                       </>
                     )}
                   </button>
@@ -185,10 +185,10 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
                   <span className="text-2xl">✅</span>
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  反馈已发送！
+                  Feedback Sent!
                 </h3>
                 <p className="text-gray-600 text-sm">
-                  感谢您的反馈，我们会认真考虑您的建议
+                  Thank you for your feedback, we will carefully consider your suggestions
                 </p>
               </div>
             )}
@@ -196,7 +196,7 @@ const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ className = '' }) => {
         )}
       </AnimatePresence>
 
-      {/* 浮标按钮 */}
+      {/* Floating Button */}
       <motion.button
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
