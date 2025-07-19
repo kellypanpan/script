@@ -70,6 +70,22 @@ const ScriptDoctor: React.FC = () => {
     }
   }, []);
 
+  // Save draft
+  const saveDraft = React.useCallback(() => {
+    if (!scriptContent.trim()) return;
+    
+    const draft: ScriptDraft = {
+      id: Date.now().toString(),
+      content: scriptContent,
+      timestamp: new Date().toISOString(),
+      name: currentDraftName
+    };
+    
+    const newDrafts = [draft, ...drafts.slice(0, 2)]; // Keep only 3 most recent
+    setDrafts(newDrafts);
+    localStorage.setItem('script-doctor-drafts', JSON.stringify(newDrafts));
+  }, [scriptContent, currentDraftName, drafts]);
+
   // Auto-save current script
   useEffect(() => {
     if (scriptContent) {
@@ -241,22 +257,6 @@ const ScriptDoctor: React.FC = () => {
     setRewriteOptions([]);
     setSelectedText('');
   };
-
-  // Save draft
-  const saveDraft = React.useCallback(() => {
-    if (!scriptContent.trim()) return;
-    
-    const draft: ScriptDraft = {
-      id: Date.now().toString(),
-      content: scriptContent,
-      timestamp: new Date().toISOString(),
-      name: currentDraftName
-    };
-    
-    const newDrafts = [draft, ...drafts.slice(0, 2)]; // Keep only 3 most recent
-    setDrafts(newDrafts);
-    localStorage.setItem('script-doctor-drafts', JSON.stringify(newDrafts));
-  }, [scriptContent, currentDraftName, drafts]);
 
   // Export functions
   const exportTXT = () => {
