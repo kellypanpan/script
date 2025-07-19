@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import FeedbackWidget from './components/FeedbackWidget';
 import Landing from './pages/Landing';
 import ScriptGenerator from './pages/ScriptGenerator';
 import ScriptDoctor from './pages/ScriptDoctor';
@@ -22,6 +23,7 @@ function App() {
           <Route path="/blog" element={<BlogList />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
         </Routes>
+        <FeedbackWidget />
       </Layout>
     </Router>
   );
