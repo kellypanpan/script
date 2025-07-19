@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Landing from './pages/Landing';
 import ScriptGenerator from './pages/ScriptGenerator';
+import ScriptDoctor from './pages/ScriptDoctor';
 import Dashboard from './pages/Dashboard';
 import Pricing from './pages/Pricing';
 import BlogList from './pages/BlogList';
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/generate" element={<ScriptGenerator />} />
+          <Route path="/script-doctor" element={<ScriptDoctor />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/blog" element={<BlogList />} />

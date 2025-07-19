@@ -22,6 +22,8 @@ export interface PlanFeatures {
   canCollaborate: boolean;
   canSaveTemplates: boolean;
   canRewriteScenes: boolean;
+  maxDailyScriptAnalysis: number;
+  canUseScriptDoctor: boolean;
 }
 
 export const PLAN_FEATURES: Record<UserPlan, PlanFeatures> = {
@@ -35,7 +37,9 @@ export const PLAN_FEATURES: Record<UserPlan, PlanFeatures> = {
     canUseStoryboard: false,
     canCollaborate: false,
     canSaveTemplates: false,
-    canRewriteScenes: true,
+    canRewriteScenes: false,
+    maxDailyScriptAnalysis: 1,
+    canUseScriptDoctor: true,
   },
   pro: {
     name: 'Pro',
@@ -48,6 +52,8 @@ export const PLAN_FEATURES: Record<UserPlan, PlanFeatures> = {
     canCollaborate: false,
     canSaveTemplates: true,
     canRewriteScenes: true,
+    maxDailyScriptAnalysis: 999,
+    canUseScriptDoctor: true,
   },
   studio: {
     name: 'Studio',
@@ -60,6 +66,8 @@ export const PLAN_FEATURES: Record<UserPlan, PlanFeatures> = {
     canCollaborate: true,
     canSaveTemplates: true,
     canRewriteScenes: true,
+    maxDailyScriptAnalysis: 999,
+    canUseScriptDoctor: true,
   },
 };
 

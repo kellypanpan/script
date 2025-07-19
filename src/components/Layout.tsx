@@ -13,6 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Generate', href: '/generate' },
+    { name: 'Script Doctor', href: '/script-doctor' },
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'Blog', href: '/blog' },
@@ -112,6 +113,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
               <h3 className="font-semibold mb-4">Product</h3>
               <ul className="space-y-2 text-gray-300">
                 <li><Link to="/generate" className="hover:text-white">Script Generator</Link></li>
+                <li><Link to="/script-doctor" className="hover:text-white">Script Doctor</Link></li>
                 <li><Link to="/dashboard" className="hover:text-white">Dashboard</Link></li>
                 <li><Link to="/pricing" className="hover:text-white">Pricing</Link></li>
                 <li><Link to="/blog" className="hover:text-white">Blog</Link></li>
