@@ -137,7 +137,7 @@ Your output should be predictable, elegant, and production-ready.`;
     });
 
     // Extract script content from Claude's response
-    const script = response.content?.[0]?.text || response.content;
+    const script = response.choices?.[0]?.message?.content || 'Failed to generate script';
 
     return NextResponse.json({ 
       script,

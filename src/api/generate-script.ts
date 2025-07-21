@@ -146,7 +146,7 @@ Your output should be predictable, elegant, and production-ready.`;
     }
 
     return Response.json({ 
-      script: response.content,
+      script: response.choices?.[0]?.message?.content || 'Failed to generate script',
       success: true 
     });
 
