@@ -35,6 +35,7 @@ import { useAuthWithFallback } from '../components/AuthProvider';
 import ProjectContext from '../components/ProjectContext';
 import ProfessionalScriptEditor from '../components/ProfessionalScriptEditor';
 import VersionHistory from '../components/VersionHistory';
+import LoginPrompt from '../components/LoginPrompt';
 import { VersionHistoryManager } from '../utils/versionHistory';
 
 interface ScriptGenerationInput {
@@ -105,6 +106,14 @@ const ScriptStudio: React.FC = () => {
   // Auto-save cleanup function
   const autoSaveCleanup = useRef<(() => void) | null>(null);
 
+  // Login prompt state
+  const [loginPrompt, setLoginPrompt] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    actionType: 'login' as 'login' | 'upgrade'
+  });
+
   // Setup auto-save for version history
   useEffect(() => {
     if (currentProject && user && autoSaveEnabled) {
@@ -154,6 +163,16 @@ const ScriptStudio: React.FC = () => {
       }
     }
   }, [currentProject]);
+
+  // Show login prompt helper
+  const showLoginPrompt = useCallback((title: string, message: string, actionType: 'login' | 'upgrade' = 'login') => {
+    setLoginPrompt({
+      isOpen: true,
+      title,
+      message,
+      actionType
+    });
+  }, []);
 
   // Calculate script statistics
   const updateScriptStats = useCallback((content: string) => {
@@ -834,38 +853,6 @@ const ScriptStudio: React.FC = () => {
           style={{ width: leftPanelWidth }}
         >
           <div className="p-6 space-y-4">
-            {/* Guest Mode Banner */}
-            {!isAuthenticated && (
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-semibold text-blue-900">🎭 Guest Mode</h3>
-                  <Link 
-                    to="/login" 
-                    className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full hover:bg-blue-700 transition-colors"
-                  >
-                    Sign In
-                  </Link>
-                </div>
-                <p className="text-xs text-blue-700 mb-2">
-                  You're using ReadyScriptPro as a guest. Limited features available.
-                </p>
-                <div className="text-xs text-blue-600 space-y-1">
-                  <div className="flex items-center">
-                    <span className="mr-2">✅</span>
-                    <span>Basic script generation</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-2">❌</span>
-                    <span>Save projects</span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="mr-2">❌</span>
-                    <span>Version history</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <h2 className="text-lg font-semibold text-gray-800 mb-4">
               ✨ Generate Script
             </h2>
@@ -1108,17 +1095,24 @@ const ScriptStudio: React.FC = () => {
             <div className="flex items-center space-x-2">
               {scriptContent && (
                 <>
-                  {/* Version History Button - Only for authenticated users */}
-                  {isAuthenticated && (
-                    <button
-                      onClick={() => saveVersion('Manual save', false)}
-                      className="px-3 py-1 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1 bg-blue-100 text-blue-800 hover:bg-blue-200"
-                      title="Save Current Version"
-                    >
-                      <Save className="h-4 w-4" />
-                      <span>Save Version</span>
-                    </button>
-                  )}
+                  {/* Save Version Button */}
+                  <button
+                    onClick={() => {
+                      if (!isAuthenticated) {
+                        showLoginPrompt(
+                          'Save Your Work',
+                          'Create an account to save versions of your script and never lose your progress.'
+                        );
+                        return;
+                      }
+                      saveVersion('Manual save', false);
+                    }}
+                    className="px-3 py-1 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1 bg-blue-100 text-blue-800 hover:bg-blue-200"
+                    title="Save Current Version"
+                  >
+                    <Save className="h-4 w-4" />
+                    <span>Save Version</span>
+                  </button>
                   {/* AI Assistant Button */}
                   <button
                     onClick={() => setAiPanelExpanded(!aiPanelExpanded)}
@@ -1352,36 +1346,45 @@ const ScriptStudio: React.FC = () => {
               </div>
             </div>
 
-            {/* Version History Toggle - Only for authenticated users */}
-            {isAuthenticated ? (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-lg font-semibold text-gray-800">Version History</h3>
-                  <button
-                    onClick={() => setShowVersionHistory(!showVersionHistory)}
-                    className={`p-2 rounded-lg transition-colors flex items-center space-x-1 ${
-                      showVersionHistory
-                        ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                    }`}
-                  >
-                    <History className="h-4 w-4" />
-                    <span className="text-sm">{showVersionHistory ? 'Hide' : 'Show'}</span>
-                  </button>
+            {/* Version History Toggle */}
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-gray-800">Version History</h3>
+                <button
+                  onClick={() => {
+                    if (!isAuthenticated) {
+                      showLoginPrompt(
+                        'Version History',
+                        'Track changes, restore previous versions, and collaborate with others. Create an account to unlock version history.'
+                      );
+                      return;
+                    }
+                    setShowVersionHistory(!showVersionHistory);
+                  }}
+                  className={`p-2 rounded-lg transition-colors flex items-center space-x-1 ${
+                    showVersionHistory
+                      ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
+                >
+                  <History className="h-4 w-4" />
+                  <span className="text-sm">{showVersionHistory ? 'Hide' : 'Show'}</span>
+                </button>
+              </div>
+              
+              {showVersionHistory && currentProject && user && (
+                <div className="h-64">
+                  <VersionHistory
+                    projectId={currentProject.id}
+                    userId={user.id}
+                    currentContent={scriptContent}
+                    currentTitle={currentProject.title}
+                    onRestoreVersion={handleVersionRestore}
+                  />
                 </div>
-                
-                {showVersionHistory && currentProject && user && (
-                  <div className="h-64">
-                    <VersionHistory
-                      projectId={currentProject.id}
-                      userId={user.id}
-                      currentContent={scriptContent}
-                      currentTitle={currentProject.title}
-                      onRestoreVersion={handleVersionRestore}
-                    />
-                  </div>
-                )}
-                
+              )}
+              
+              {isAuthenticated && (
                 <div className="mt-4 flex items-center justify-between">
                   <div className="flex items-center space-x-2">
                     <input
@@ -1396,26 +1399,8 @@ const ScriptStudio: React.FC = () => {
                     </label>
                   </div>
                 </div>
-              </div>
-            ) : (
-              /* Guest Mode - Version History Promotion */
-              <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-gray-300">
-                <div className="text-center">
-                  <History className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Version History</h3>
-                  <p className="text-xs text-gray-500 mb-3">
-                    Track changes, restore previous versions, and never lose your work.
-                  </p>
-                  <Link 
-                    to="/register" 
-                    className="inline-flex items-center text-xs bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                  >
-                    <span>Sign up to unlock</span>
-                    <ArrowRight className="h-3 w-3 ml-1" />
-                  </Link>
-                </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Export Options */}
             <div>
@@ -1430,20 +1415,46 @@ const ScriptStudio: React.FC = () => {
                   <span>Export TXT</span>
                 </button>
                 <button 
-                  onClick={() => handleExportScript('pdf')}
-                  disabled={!scriptContent || !hasFeature('pdf_export')}
+                  onClick={() => {
+                    if (!scriptContent) return;
+                    
+                    if (!hasFeature('canExportPDF')) {
+                      showLoginPrompt(
+                        'Professional Export',
+                        'Export your scripts to professional PDF format. Upgrade to Pro for advanced export features.',
+                        'upgrade'
+                      );
+                      return;
+                    }
+                    
+                    handleExportScript('pdf');
+                  }}
+                  disabled={!scriptContent}
                   className="w-full bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 py-3 rounded-lg font-medium hover:from-orange-600 hover:to-orange-700 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Download className="h-4 w-4" />
-                  <span>Export PDF {!hasFeature('pdf_export') ? '(Pro)' : ''}</span>
+                  <span>Export PDF</span>
                 </button>
                 <button 
-                  onClick={() => handleExportScript('fdx')}
-                  disabled={!scriptContent || !hasFeature('fdx_export')}
+                  onClick={() => {
+                    if (!scriptContent) return;
+                    
+                    if (!hasFeature('canExportFDX')) {
+                      showLoginPrompt(
+                        'Final Draft Export',
+                        'Export directly to Final Draft format (FDX). Perfect for professional screenwriting workflows. Upgrade to Pro.',
+                        'upgrade'
+                      );
+                      return;
+                    }
+                    
+                    handleExportScript('fdx');
+                  }}
+                  disabled={!scriptContent}
                   className="w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white px-4 py-3 rounded-lg font-medium hover:from-purple-600 hover:to-purple-700 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Download className="h-4 w-4" />
-                  <span>Export FDX {!hasFeature('fdx_export') ? '(Pro)' : ''}</span>
+                  <span>Export FDX</span>
                 </button>
               </div>
             </div>
@@ -1638,6 +1649,15 @@ const ScriptStudio: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Login Prompt Modal */}
+      <LoginPrompt
+        isOpen={loginPrompt.isOpen}
+        onClose={() => setLoginPrompt(prev => ({ ...prev, isOpen: false }))}
+        title={loginPrompt.title}
+        message={loginPrompt.message}
+        actionType={loginPrompt.actionType}
+      />
     </div>
   );
 };

@@ -58,7 +58,7 @@ const Landing: React.FC = () => {
                     <PenTool className="h-6 w-6" />
                   </div>
                   <div className="text-left">
-                    <div className="text-lg font-bold">I want to create new scripts</div>
+                    <div className="text-lg font-bold">Create New Scripts</div>
                     <div className="text-sm text-blue-100">From idea to professional script, AI assists throughout</div>
                   </div>
                 </div>
@@ -76,24 +76,48 @@ const Landing: React.FC = () => {
                     <Wand2 className="h-6 w-6" />
                   </div>
                   <div className="text-left">
-                    <div className="text-lg font-bold">I have scripts, need professional advice</div>
-                    <div className="text-sm text-green-100">AI screenwriter diagnosis, professional improvement suggestions</div>
+                    <div className="text-lg font-bold">Improve Existing Scripts</div>
+                    <div className="text-sm text-green-100">AI screenwriter diagnosis & professional suggestions</div>
                   </div>
                 </div>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
-            {/* Quick Access Entry */}
-            <div className="mt-8">
-              <Link
-                to="/dashboard"
-                className="inline-flex items-center text-gray-300 hover:text-white transition-colors space-x-2 text-sm"
-              >
-                <FileText className="h-4 w-4" />
-                <span>Have existing projects? Enter Creation Center</span>
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+            {/* Sign Up Benefits */}
+            <div className="mt-12 p-6 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 max-w-2xl mx-auto">
+              <h3 className="text-lg font-semibold text-center mb-4 flex items-center justify-center space-x-2">
+                <Star className="h-5 w-5 text-yellow-400" />
+                <span>Create Free Account - Unlock More Features</span>
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div className="flex items-center space-x-2 text-blue-100">
+                  <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                  <span>Personal Dashboard & Project Manager</span>
+                </div>
+                <div className="flex items-center space-x-2 text-blue-100">
+                  <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                  <span>Save & organize unlimited scripts</span>
+                </div>
+                <div className="flex items-center space-x-2 text-blue-100">
+                  <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                  <span>Version history & backup</span>
+                </div>
+                <div className="flex items-center space-x-2 text-blue-100">
+                  <CheckCircle className="h-4 w-4 text-green-400 flex-shrink-0" />
+                  <span>Advanced export options</span>
+                </div>
+              </div>
+              <div className="mt-4 text-center">
+                <Link
+                  to="/dashboard"
+                  className="inline-flex items-center text-gray-300 hover:text-white transition-colors space-x-2 text-sm font-medium"
+                >
+                  <FileText className="h-4 w-4" />
+                  <span>Already have projects? Access Dashboard</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -202,53 +226,53 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* 核心功能展示 */}
+      {/* Core Features */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              不只是工具，是你的创作成长伙伴
+              More than a tool, your creative growth partner
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-              从新手到专家，从想法到作品，全程AI智能协作
+              From beginner to expert, from idea to finished work, full AI intelligent collaboration
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
-            {/* AI创作工作台 */}
+            {/* AI Creation Workbench */}
             <div>
               <div className="bg-blue-100 w-20 h-20 rounded-3xl flex items-center justify-center mb-8">
                 <PenTool className="h-10 w-10 text-blue-600" />
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
-                AI创作工作台
+                AI Creation Workbench
               </h3>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                不只是生成器，更是专业的编剧协作编辑器。实时AI建议，智能格式优化，支持多平台内容创作。
+                Not just a generator, but a professional screenwriter collaborative editor. Real-time AI suggestions, intelligent format optimization, multi-platform content creation support.
               </p>
               <div className="space-y-4 mb-8">
                 <div className="flex items-center space-x-3">
                   <Zap className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">30秒生成专业剧本</span>
+                  <span className="text-gray-700">Generate professional scripts in 30 seconds</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Zap className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">6种AI智能助手功能</span>
+                  <span className="text-gray-700">6 AI intelligent assistant features</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Zap className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">支持TikTok、YouTube等平台优化</span>
+                  <span className="text-gray-700">Support TikTok, YouTube and other platform optimization</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Zap className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">无限撤销重做，永不丢失</span>
+                  <span className="text-gray-700">Unlimited undo/redo, never lose your work</span>
                 </div>
               </div>
               <Link
                 to="/studio"
                 className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors space-x-2"
               >
-                <span>立即开始创作</span>
+                <span>Start Creating Now</span>
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </div>
@@ -266,7 +290,7 @@ const Landing: React.FC = () => {
                   <div className="bg-gray-100 h-4 rounded w-5/6"></div>
                   <div className="bg-purple-100 h-8 rounded w-full flex items-center px-3">
                     <Sparkles className="h-4 w-4 text-purple-600 mr-2" />
-                    <span className="text-xs text-purple-600">AI正在优化剧本...</span>
+                    <span className="text-xs text-purple-600">AI is optimizing script...</span>
                   </div>
                 </div>
               </div>
@@ -274,23 +298,23 @@ const Landing: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* 智能剧本顾问 */}
+            {/* Smart Script Advisor */}
             <div className="order-2 lg:order-1">
               <div className="bg-gradient-to-br from-green-50 to-teal-50 p-8 rounded-2xl">
                 <div className="bg-white rounded-xl shadow-lg p-6">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">✍️ AI剧本诊断报告</h4>
+                  <h4 className="text-lg font-semibold text-gray-900 mb-4">✍️ AI Script Analysis Report</h4>
                   <div className="space-y-3">
                     <div className="p-3 border-l-4 border-yellow-400 bg-yellow-50 rounded">
-                      <h5 className="text-sm font-medium text-gray-900">场景设置</h5>
-                      <p className="text-xs text-gray-600">建议增加更多视觉描述来清晰建立场景</p>
+                      <h5 className="text-sm font-medium text-gray-900">Scene Setting</h5>
+                      <p className="text-xs text-gray-600">Suggest adding more visual descriptions to clearly establish scenes</p>
                     </div>
                     <div className="p-3 border-l-4 border-green-400 bg-green-50 rounded">
-                      <h5 className="text-sm font-medium text-gray-900">对话质量</h5>
-                      <p className="text-xs text-gray-600">角色对话自然度良好，符合人物设定</p>
+                      <h5 className="text-sm font-medium text-gray-900">Dialogue Quality</h5>
+                      <p className="text-xs text-gray-600">Character dialogue is natural and fits character settings</p>
                     </div>
                     <div className="p-3 border-l-4 border-blue-400 bg-blue-50 rounded">
-                      <h5 className="text-sm font-medium text-gray-900">节奏控制</h5>
-                      <p className="text-xs text-gray-600">建议调整第2幕的节奏，增强戏剧张力</p>
+                      <h5 className="text-sm font-medium text-gray-900">Pacing Control</h5>
+                      <p className="text-xs text-gray-600">Suggest adjusting Act 2 pacing to enhance dramatic tension</p>
                     </div>
                   </div>
                 </div>
@@ -301,34 +325,34 @@ const Landing: React.FC = () => {
                 <Wand2 className="h-10 w-10 text-green-600" />
               </div>
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">
-                智能剧本顾问
+                Smart Script Advisor
               </h3>
               <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-                像有个专业编剧在身边指导。AI分析剧本结构、节奏、对话，给出具体可执行的改进建议。
+                Like having a professional screenwriter by your side. AI analyzes script structure, pacing, and dialogue, providing specific actionable improvement suggestions.
               </p>
               <div className="space-y-4 mb-8">
                 <div className="flex items-center space-x-3">
                   <Zap className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">专业编剧级别的分析</span>
+                  <span className="text-gray-700">Professional screenwriter-level analysis</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Zap className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">结构、节奏、对话全方位诊断</span>
+                  <span className="text-gray-700">Comprehensive structure, pacing, and dialogue diagnosis</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Zap className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">具体可执行的改进建议</span>
+                  <span className="text-gray-700">Specific actionable improvement suggestions</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Zap className="h-5 w-5 text-green-500" />
-                  <span className="text-gray-700">一键应用优化方案</span>
+                  <span className="text-gray-700">One-click optimization implementation</span>
                 </div>
               </div>
               <Link
                 to="/script-doctor"
                 className="inline-flex items-center bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors space-x-2"
               >
-                <span>免费诊断我的剧本</span>
+                <span>Free Script Diagnosis</span>
                 <ArrowRight className="h-5 w-5" />
               </Link>
             </div>
@@ -336,15 +360,15 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* 工作流展示 */}
+      {/* Workflow Display */}
       <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              3步完成专业剧本创作
+              Complete professional script creation in 3 steps
             </h2>
             <p className="text-xl text-gray-600">
-              从想法到成品，整个过程不超过10分钟
+              From idea to finished product, the entire process takes less than 10 minutes
             </p>
           </div>
 
@@ -353,14 +377,14 @@ const Landing: React.FC = () => {
               <div className="bg-blue-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Lightbulb className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">1. 输入创意想法</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">1. Input Creative Ideas</h3>
               <p className="text-gray-600 mb-6">
-                输入你的故事想法、角色设定，选择平台类型和风格，AI理解你的创作意图
+                Enter your story ideas and character settings, choose platform type and style, AI understands your creative intent
               </p>
               <div className="bg-white p-4 rounded-xl shadow-sm">
-                <div className="text-left text-sm text-gray-500 mb-2">想法输入</div>
+                <div className="text-left text-sm text-gray-500 mb-2">Idea Input</div>
                 <div className="bg-gray-100 rounded p-2 text-xs">
-                  "一个程序员发现他的AI助手有了自主意识..."
+                  "A programmer discovers his AI assistant has developed consciousness..."
                 </div>
               </div>
             </div>
@@ -369,15 +393,15 @@ const Landing: React.FC = () => {
               <div className="bg-purple-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <PenTool className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">2. AI智能创作</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">2. AI Intelligent Creation</h3>
               <p className="text-gray-600 mb-6">
-                30秒内生成专业格式剧本，实时编辑优化，6种AI助手随时协助改进
+                Generate professional format scripts in 30 seconds, real-time editing optimization, 6 AI assistants help improve anytime
               </p>
               <div className="bg-white p-4 rounded-xl shadow-sm">
-                <div className="text-left text-sm text-gray-500 mb-2">AI生成中</div>
+                <div className="text-left text-sm text-gray-500 mb-2">AI Generating</div>
                 <div className="flex items-center space-x-2 text-xs text-purple-600">
                   <div className="w-2 h-2 bg-purple-600 rounded-full animate-pulse"></div>
-                  <span>正在生成专业剧本格式...</span>
+                  <span>Generating professional script format...</span>
                 </div>
               </div>
             </div>
@@ -386,12 +410,12 @@ const Landing: React.FC = () => {
               <div className="bg-green-600 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <FileText className="h-8 w-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-4">3. 导出使用</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">3. Export & Use</h3>
               <p className="text-gray-600 mb-6">
-                多格式导出，直接用于拍摄制作。项目永久保存，随时继续编辑
+                Multi-format export, ready for filming and production. Projects saved permanently, continue editing anytime
               </p>
               <div className="bg-white p-4 rounded-xl shadow-sm">
-                <div className="text-left text-sm text-gray-500 mb-2">导出选项</div>
+                <div className="text-left text-sm text-gray-500 mb-2">Export Options</div>
                 <div className="flex space-x-2">
                   <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs">PDF</span>
                   <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs">FDX</span>
@@ -403,12 +427,12 @@ const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* 社会证明和统计 */}
+      {/* Social Proof and Statistics */}
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              已有数千创作者信任我们
+              Thousands of creators already trust us
             </h2>
           </div>
 
@@ -418,28 +442,28 @@ const Landing: React.FC = () => {
                 <Users className="h-8 w-8 text-blue-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">5,000+</div>
-              <div className="text-gray-600">活跃创作者</div>
+              <div className="text-gray-600">Active Creators</div>
             </div>
             <div className="text-center">
               <div className="bg-green-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <FileText className="h-8 w-8 text-green-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">50,000+</div>
-              <div className="text-gray-600">生成剧本</div>
+              <div className="text-gray-600">Scripts Generated</div>
             </div>
             <div className="text-center">
               <div className="bg-purple-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <TrendingUp className="h-8 w-8 text-purple-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">95%</div>
-              <div className="text-gray-600">满意度</div>
+              <div className="text-gray-600">Satisfaction Rate</div>
             </div>
             <div className="text-center">
               <div className="bg-yellow-100 w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4">
                 <Star className="h-8 w-8 text-yellow-600" />
               </div>
               <div className="text-3xl font-bold text-gray-900 mb-2">4.8/5</div>
-              <div className="text-gray-600">用户评分</div>
+              <div className="text-gray-600">User Rating</div>
             </div>
           </div>
         </div>
@@ -449,24 +473,24 @@ const Landing: React.FC = () => {
       <section className="bg-gradient-to-r from-blue-600 via-purple-600 to-teal-600 text-white py-20">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-            准备好开始你的创作之旅了吗？
+            Ready to start your creative journey?
           </h2>
           <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-            无论你是想创作新剧本，还是改进现有作品，我们的AI都已准备好成为你的创作伙伴
+            Whether you want to create new scripts or improve existing works, our AI is ready to be your creative partner
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/studio"
               className="bg-white text-blue-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center space-x-2"
             >
-              <span>开始创作新剧本</span>
+              <span>Start Creating New Scripts</span>
               <ArrowRight className="h-5 w-5" />
             </Link>
             <Link
               to="/script-doctor"
               className="bg-white/10 border-2 border-white/30 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-white/20 transition-colors inline-flex items-center space-x-2"
             >
-              <span>改进我的剧本</span>
+              <span>Improve My Scripts</span>
               <ArrowRight className="h-5 w-5" />
             </Link>
           </div>
