@@ -23,7 +23,7 @@ interface LocationState {
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, isLoading } = useUser();
+  const { login, isLoading } = useAuth();
   
   const [formData, setFormData] = useState({
     email: '',

@@ -10,7 +10,7 @@ import {
   Undo2,
   Redo2
 } from 'lucide-react';
-import { useAuth } from '../components/AuthProvider';
+import { useAuthWithFallback } from '../components/AuthProvider';
 import ProjectContext from '../components/ProjectContext';
 
 interface ScriptSuggestion {
@@ -29,7 +29,7 @@ interface ScriptDraft {
 }
 
 const ScriptDoctor: React.FC = () => {
-  const { user, hasFeature } = useAuth();
+  const { user, hasFeature, isAuthenticated } = useAuthWithFallback();
   
   // Core state
   const [scriptContent, setScriptContent] = useState('');

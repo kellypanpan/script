@@ -9,7 +9,7 @@ import {
   ArrowLeft,
   ArrowRight 
 } from 'lucide-react';
-import { useUser } from '../hooks/useUser';
+import { useAuthWithFallback } from './AuthProvider';
 
 interface SceneRewriterProps {
   sceneText: string;
@@ -37,7 +37,7 @@ export const SceneRewriter: React.FC<SceneRewriterProps> = ({
   onRewriteAccept,
   onRewriteReject,
 }) => {
-  const { canUseFeature } = useUser();
+  const { canUseFeature } = useAuthWithFallback();
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [rewriteType, setRewriteType] = useState<RewriteType>('improve');

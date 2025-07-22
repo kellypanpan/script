@@ -179,6 +179,60 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
+// Fallback hook for guest mode - returns mock guest user capabilities
+export const useAuthWithFallback = (): AuthContextType => {
+  const context = useContext(AuthContext);
+  
+  if (!context) {
+    // Return guest user capabilities
+    return {
+      user: null,
+      isLoading: false,
+      isAuthenticated: false,
+      login: async () => { throw new Error('Not in auth context'); },
+      logout: () => {},
+      register: async () => { throw new Error('Not in auth context'); },
+      updatePlan: () => {},
+      updateProfile: () => {},
+      hasFeature: (feature: keyof PlanFeatures) => {
+        // Guest users have very limited features
+        const guestFeatures: Partial<PlanFeatures> = {
+          canExportFDX: false,
+          canExportPDF: false,
+          canUseAudio: false,
+          canUseStoryboard: false,
+          canCollaborate: false,
+          canSaveTemplates: false,
+          canRewriteScenes: false,
+          canUseScriptDoctor: true, // Basic script doctor for guests
+          maxDailyGenerations: 2, // Limited for guests
+          maxProjects: 0,
+          maxDailyScriptAnalysis: 1,
+        };
+        return guestFeatures[feature] as boolean || false;
+      },
+      canUseFeature: (feature: keyof PlanFeatures) => {
+        const guestFeatures: Partial<PlanFeatures> = {
+          canExportFDX: false,
+          canExportPDF: false,
+          canUseAudio: false,
+          canUseStoryboard: false,
+          canCollaborate: false,
+          canSaveTemplates: false,
+          canRewriteScenes: false,
+          canUseScriptDoctor: true,
+          maxDailyGenerations: 2,
+          maxProjects: 0,
+          maxDailyScriptAnalysis: 1,
+        };
+        return guestFeatures[feature] as boolean || false;
+      },
+    };
+  }
+  
+  return context;
+};
+
 // Hook that returns the current auth state without throwing if not in provider
 export const useAuthSafe = (): AuthContextType | null => {
   const context = useContext(AuthContext);

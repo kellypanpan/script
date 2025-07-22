@@ -26,7 +26,7 @@ const MOCK_USER: User = {
 export const useUser = (): UserContextType => {
   const context = useContext(UserContext);
   if (!context) {
-    // Return mock implementation for development
+    // Return mock implementation for development/compatibility
     return useMockUser();
   }
   return context;

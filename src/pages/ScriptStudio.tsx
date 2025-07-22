@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, 
@@ -30,7 +31,7 @@ import { exportScript } from '../utils/pdfExporter';
 import { sampleScripts, getRandomScript } from '../data/sampleScripts';
 import { shortFilmIdeas } from '../data/shortFilmIdeas';
 import appConfig from '../config/app';
-import { useAuth } from '../components/AuthProvider';
+import { useAuthWithFallback } from '../components/AuthProvider';
 import ProjectContext from '../components/ProjectContext';
 import ProfessionalScriptEditor from '../components/ProfessionalScriptEditor';
 import VersionHistory from '../components/VersionHistory';
@@ -46,7 +47,7 @@ interface ScriptGenerationInput {
 }
 
 const ScriptStudio: React.FC = () => {
-  const { user, hasFeature } = useAuth();
+  const { user, hasFeature, isAuthenticated } = useAuthWithFallback();
   
   // Script generation and editing state
   const [scriptInput, setScriptInput] = useState<ScriptGenerationInput>({
@@ -833,6 +834,38 @@ const ScriptStudio: React.FC = () => {
           style={{ width: leftPanelWidth }}
         >
           <div className="p-6 space-y-4">
+            {/* Guest Mode Banner */}
+            {!isAuthenticated && (
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-sm font-semibold text-blue-900">🎭 Guest Mode</h3>
+                  <Link 
+                    to="/login" 
+                    className="text-xs bg-blue-600 text-white px-2 py-1 rounded-full hover:bg-blue-700 transition-colors"
+                  >
+                    Sign In
+                  </Link>
+                </div>
+                <p className="text-xs text-blue-700 mb-2">
+                  You're using ReadyScriptPro as a guest. Limited features available.
+                </p>
+                <div className="text-xs text-blue-600 space-y-1">
+                  <div className="flex items-center">
+                    <span className="mr-2">✅</span>
+                    <span>Basic script generation</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2">❌</span>
+                    <span>Save projects</span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="mr-2">❌</span>
+                    <span>Version history</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <h2 className="text-lg font-semibold text-gray-800 mb-4">
               ✨ Generate Script
             </h2>
@@ -1075,15 +1108,17 @@ const ScriptStudio: React.FC = () => {
             <div className="flex items-center space-x-2">
               {scriptContent && (
                 <>
-                  {/* Version History Button */}
-                  <button
-                    onClick={() => saveVersion('Manual save', false)}
-                    className="px-3 py-1 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1 bg-blue-100 text-blue-800 hover:bg-blue-200"
-                    title="Save Current Version"
-                  >
-                    <Save className="h-4 w-4" />
-                    <span>Save Version</span>
-                  </button>
+                  {/* Version History Button - Only for authenticated users */}
+                  {isAuthenticated && (
+                    <button
+                      onClick={() => saveVersion('Manual save', false)}
+                      className="px-3 py-1 rounded-lg text-sm font-medium transition-colors flex items-center space-x-1 bg-blue-100 text-blue-800 hover:bg-blue-200"
+                      title="Save Current Version"
+                    >
+                      <Save className="h-4 w-4" />
+                      <span>Save Version</span>
+                    </button>
+                  )}
                   {/* AI Assistant Button */}
                   <button
                     onClick={() => setAiPanelExpanded(!aiPanelExpanded)}
@@ -1317,50 +1352,70 @@ const ScriptStudio: React.FC = () => {
               </div>
             </div>
 
-            {/* Version History Toggle */}
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-800">Version History</h3>
-                <button
-                  onClick={() => setShowVersionHistory(!showVersionHistory)}
-                  className={`p-2 rounded-lg transition-colors flex items-center space-x-1 ${
-                    showVersionHistory
-                      ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                  }`}
-                >
-                  <History className="h-4 w-4" />
-                  <span className="text-sm">{showVersionHistory ? 'Hide' : 'Show'}</span>
-                </button>
-              </div>
-              
-              {showVersionHistory && currentProject && user && (
-                <div className="h-64">
-                  <VersionHistory
-                    projectId={currentProject.id}
-                    userId={user.id}
-                    currentContent={scriptContent}
-                    currentTitle={currentProject.title}
-                    onRestoreVersion={handleVersionRestore}
-                  />
+            {/* Version History Toggle - Only for authenticated users */}
+            {isAuthenticated ? (
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-lg font-semibold text-gray-800">Version History</h3>
+                  <button
+                    onClick={() => setShowVersionHistory(!showVersionHistory)}
+                    className={`p-2 rounded-lg transition-colors flex items-center space-x-1 ${
+                      showVersionHistory
+                        ? 'bg-blue-100 text-blue-600 hover:bg-blue-200'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    }`}
+                  >
+                    <History className="h-4 w-4" />
+                    <span className="text-sm">{showVersionHistory ? 'Hide' : 'Show'}</span>
+                  </button>
                 </div>
-              )}
-              
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id="autoSave"
-                    checked={autoSaveEnabled}
-                    onChange={(e) => setAutoSaveEnabled(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <label htmlFor="autoSave" className="text-sm text-gray-700">
-                    Auto-save every 30s
-                  </label>
+                
+                {showVersionHistory && currentProject && user && (
+                  <div className="h-64">
+                    <VersionHistory
+                      projectId={currentProject.id}
+                      userId={user.id}
+                      currentContent={scriptContent}
+                      currentTitle={currentProject.title}
+                      onRestoreVersion={handleVersionRestore}
+                    />
+                  </div>
+                )}
+                
+                <div className="mt-4 flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      id="autoSave"
+                      checked={autoSaveEnabled}
+                      onChange={(e) => setAutoSaveEnabled(e.target.checked)}
+                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                    <label htmlFor="autoSave" className="text-sm text-gray-700">
+                      Auto-save every 30s
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              /* Guest Mode - Version History Promotion */
+              <div className="bg-gray-50 rounded-lg p-4 border-2 border-dashed border-gray-300">
+                <div className="text-center">
+                  <History className="h-8 w-8 mx-auto text-gray-400 mb-2" />
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Version History</h3>
+                  <p className="text-xs text-gray-500 mb-3">
+                    Track changes, restore previous versions, and never lose your work.
+                  </p>
+                  <Link 
+                    to="/register" 
+                    className="inline-flex items-center text-xs bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    <span>Sign up to unlock</span>
+                    <ArrowRight className="h-3 w-3 ml-1" />
+                  </Link>
+                </div>
+              </div>
+            )}
 
             {/* Export Options */}
             <div>

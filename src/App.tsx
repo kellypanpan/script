@@ -45,28 +45,16 @@ function App() {
               } 
             />
 
+            {/* Semi-protected routes (accessible to guests with limited features) */}
+            <Route path="/studio" element={<ScriptStudio />} />
+            <Route path="/script-doctor" element={<ScriptDoctor />} />
+
             {/* Protected routes (require authentication) */}
             <Route 
               path="/dashboard" 
               element={
                 <AuthRequired>
                   <Dashboard />
-                </AuthRequired>
-              } 
-            />
-            <Route 
-              path="/studio" 
-              element={
-                <AuthRequired>
-                  <ScriptStudio />
-                </AuthRequired>
-              } 
-            />
-            <Route 
-              path="/script-doctor" 
-              element={
-                <AuthRequired>
-                  <ScriptDoctor />
                 </AuthRequired>
               } 
             />
