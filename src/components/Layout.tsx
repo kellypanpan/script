@@ -1,6 +1,8 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Film, Menu, X } from 'lucide-react';
+import { Film, Menu, X, User, LogOut, Settings } from 'lucide-react';
+import { useAuthSafe } from './AuthProvider';
+import Breadcrumb from './Breadcrumb';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,18 +10,43 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
+  const auth = useAuthSafe();
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
 
-  const navigation = [
+  // Different navigation for authenticated vs non-authenticated users
+  const publicNavigation = [
     { name: 'Home', href: '/' },
-    { name: 'Generate', href: '/generate' },
-    { name: 'Script Doctor', href: '/script-doctor' },
-    { name: 'Dashboard', href: '/dashboard' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'Blog', href: '/blog' },
   ];
 
+  const authenticatedNavigation = [
+    { name: 'Home', href: '/' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'AI Studio', href: '/studio' },
+    { name: 'Script Doctor', href: '/script-doctor' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Blog', href: '/blog' },
+  ];
+
+  const navigation = auth?.isAuthenticated ? authenticatedNavigation : publicNavigation;
   const isActive = (path: string) => location.pathname === path;
+
+  // Close user menu when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuOpen) {
+        const target = event.target as HTMLElement;
+        if (!target.closest('[data-user-menu]')) {
+          setUserMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [userMenuOpen]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -49,9 +76,68 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   {item.name}
                 </Link>
               ))}
-              <button className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
-                Sign In
-              </button>
+
+              {/* Authentication Controls */}
+              {auth?.isAuthenticated ? (
+                <div className="relative" data-user-menu>
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+                  >
+                    <User className="h-4 w-4" />
+                    <span>{auth.user?.name || 'User'}</span>
+                  </button>
+
+                  {/* User Dropdown Menu */}
+                  {userMenuOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50" data-user-menu>
+                      <div className="px-4 py-2 text-sm text-gray-500 border-b">
+                        {auth.user?.email}
+                      </div>
+                      <Link
+                        to="/dashboard"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                      <Link
+                        to="/pricing"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <Settings className="h-4 w-4 mr-2" />
+                        Upgrade Plan
+                      </Link>
+                      <button
+                        onClick={() => {
+                          auth.logout();
+                          setUserMenuOpen(false);
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-3">
+                  <Link
+                    to="/login"
+                    className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                  >
+                    Get Started
+                  </Link>
+                </div>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -83,14 +169,66 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     {item.name}
                   </Link>
                 ))}
-                <button className="w-full text-left bg-blue-600 text-white px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 transition-colors">
-                  Sign In
-                </button>
+                
+                {/* Mobile Authentication Controls */}
+                {auth?.isAuthenticated ? (
+                  <div className="border-t border-gray-200 pt-2">
+                    <div className="px-3 py-2 text-sm text-gray-500">
+                      Signed in as {auth.user?.name}
+                    </div>
+                    <div className="px-3 py-1 text-xs text-gray-400">
+                      {auth.user?.email}
+                    </div>
+                    <Link
+                      to="/dashboard"
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      to="/pricing"
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Upgrade Plan
+                    </Link>
+                    <button
+                      onClick={() => {
+                        auth.logout();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                ) : (
+                  <div className="border-t border-gray-200 pt-2 space-y-1">
+                    <Link
+                      to="/login"
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link
+                      to="/register"
+                      className="block bg-blue-600 text-white px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 transition-colors"
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      Get Started
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
           )}
         </div>
       </nav>
+
+      {/* Breadcrumb Navigation */}
+      <Breadcrumb />
 
       {/* Main Content */}
       <main>{children}</main>

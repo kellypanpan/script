@@ -89,7 +89,7 @@ Focus on making it more ${tone || 'professional'} while keeping it appropriate f
     });
 
     // Extract rewrite from response
-    const rewriteText = response.content?.[0]?.text || response.content;
+    const rewriteText = response.choices?.[0]?.message?.content || 'Failed to rewrite text';
     
     try {
       // Try to parse as JSON

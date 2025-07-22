@@ -10,7 +10,8 @@ import {
   Undo2,
   Redo2
 } from 'lucide-react';
-import { useUser } from '../hooks/useUser';
+import { useAuth } from '../components/AuthProvider';
+import ProjectContext from '../components/ProjectContext';
 
 interface ScriptSuggestion {
   id: string;
@@ -28,7 +29,7 @@ interface ScriptDraft {
 }
 
 const ScriptDoctor: React.FC = () => {
-  const { user, hasFeature } = useUser();
+  const { user, hasFeature } = useAuth();
   
   // Core state
   const [scriptContent, setScriptContent] = useState('');
@@ -67,6 +68,23 @@ const ScriptDoctor: React.FC = () => {
     const usage = localStorage.getItem('script-doctor-usage-' + new Date().toDateString());
     if (usage) {
       setDailyUsage(parseInt(usage));
+    }
+
+    // Check if coming from Dashboard with project data
+    const doctorProjectData = localStorage.getItem('doctorProject');
+    if (doctorProjectData) {
+      try {
+        const project = JSON.parse(doctorProjectData);
+        setScriptContent(project.content || '');
+        setCurrentDraftName(project.title || 'Untitled Script');
+        setShowUploadArea(false); // Hide upload area since we have content
+        
+        // Clear the temporary data
+        localStorage.removeItem('doctorProject');
+        console.log('Loaded project for diagnosis:', project.title);
+      } catch (error) {
+        console.error('Failed to load project for diagnosis:', error);
+      }
     }
   }, []);
 
@@ -300,6 +318,9 @@ const ScriptDoctor: React.FC = () => {
       className="min-h-screen bg-gray-50 py-8"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Project Context */}
+        <ProjectContext />
+        
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">

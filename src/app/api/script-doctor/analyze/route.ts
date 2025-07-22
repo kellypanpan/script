@@ -90,7 +90,7 @@ ${focus && focus !== 'all' ? `Focus specifically on: ${focus}` : ''}`;
     });
 
     // Extract analysis from Claude's response
-    const analysisText = response.content?.[0]?.text || response.content;
+    const analysisText = response.choices?.[0]?.message?.content || 'Failed to analyze script';
     
     try {
       // Try to parse as JSON
