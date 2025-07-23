@@ -7,8 +7,27 @@ import { z } from 'zod';
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Configure CORS for production
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? [process.env.FRONTEND_URL, process.env.DOMAIN_URL].filter(Boolean)
+    : ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:5173'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '2mb' }));
+
+// Security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  next();
+});
 
 // Zod schema replicated (keep in sync with frontend)
 const ScriptInputSchema = z.object({
@@ -300,25 +319,69 @@ ${focus && focus !== 'all' ? `Focus specifically on: ${focus}` : ''}`;
 
     console.log('✅ Claude API response received');
     const analysisText = ai.choices?.[0]?.message?.content || 'Failed to analyze script';
+    console.log('📋 Raw AI response:', analysisText.substring(0, 500) + '...');
     
     try {
-      const analysis = JSON.parse(analysisText);
+      // Try to extract JSON from markdown code blocks if present
+      let jsonText = analysisText;
+      const jsonMatch = analysisText.match(/```json\s*(\{[\s\S]*?\})\s*```/);
+      if (jsonMatch) {
+        jsonText = jsonMatch[1];
+        console.log('📋 Extracted JSON from code block');
+      }
+      
+      const analysis = JSON.parse(jsonText);
+      console.log('✅ JSON parsed successfully, suggestions count:', analysis.suggestions?.length || 0);
+      
       res.json({ 
         ...analysis,
         success: true,
         timestamp: new Date().toISOString()
       });
-    } catch {
-      // If JSON parsing fails, create a structured response
-      const suggestions = [
-        {
+    } catch (parseError) {
+      console.log('❌ JSON parsing failed:', parseError.message);
+      console.log('📋 Attempting to create structured response from text...');
+      
+      // If JSON parsing fails, create a structured response with better content extraction
+      const suggestions = [];
+      
+      // Try to extract suggestions from the text
+      const lines = analysisText.split('\n').filter(line => line.trim());
+      let currentSuggestion = null;
+      
+      for (const line of lines) {
+        if (line.includes('structure') || line.includes('dialogue') || line.includes('pacing') || line.includes('transition')) {
+          if (currentSuggestion) {
+            suggestions.push(currentSuggestion);
+          }
+          currentSuggestion = {
+            id: `suggestion-${suggestions.length + 1}`,
+            type: line.toLowerCase().includes('structure') ? 'structure' : 
+                  line.toLowerCase().includes('dialogue') ? 'dialogue' :
+                  line.toLowerCase().includes('pacing') ? 'pacing' : 'transition',
+            title: line.substring(0, 50).replace(/[^\w\s]/g, '').trim(),
+            description: line,
+            severity: 'medium'
+          };
+        } else if (currentSuggestion && line.trim().length > 10) {
+          currentSuggestion.description += ' ' + line;
+        }
+      }
+      
+      if (currentSuggestion) {
+        suggestions.push(currentSuggestion);
+      }
+      
+      // Fallback if no suggestions found
+      if (suggestions.length === 0) {
+        suggestions.push({
           id: 'ai-suggestion-1',
           type: 'structure',
-          title: 'AI Analysis',
-          description: analysisText.substring(0, 200) + '...',
+          title: 'AI Analysis Available',
+          description: analysisText.substring(0, 300) + '...',
           severity: 'medium'
-        }
-      ];
+        });
+      }
       
       res.json({
         suggestions,
@@ -420,6 +483,79 @@ Focus on making it more ${tone || 'professional'} while keeping it appropriate f
     console.error('Text rewrite error:', err);
     res.status(500).json({ 
       error: (err as Error).message || 'Failed to rewrite text',
+      success: false,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Apply suggestion to script endpoint
+app.post('/api/script-doctor/apply-suggestion', async (req, res) => {
+  console.log('🔧 Apply suggestion request received');
+  
+  try {
+    const { script, suggestion, context } = req.body;
+
+    if (!script || !suggestion) {
+      console.log('❌ Missing script or suggestion');
+      return res.status(400).json({ 
+        error: 'Script content and suggestion are required',
+        success: false 
+      });
+    }
+
+    console.log('🚀 Applying suggestion:', suggestion.title);
+
+    const systemPrompt = `You are a professional screenplay editor. Apply the following improvement suggestion to the script while maintaining its overall structure and story flow.
+
+Suggestion to apply:
+- Type: ${suggestion.type}
+- Title: ${suggestion.title}
+- Description: ${suggestion.description}
+- Severity: ${suggestion.severity}
+
+Guidelines:
+- Keep the original screenplay format (INT./EXT., character names, dialogue structure)
+- Apply ONLY the specific improvement mentioned in the suggestion
+- Maintain consistency with the existing tone and characters
+- Don't add unnecessary elements beyond what the suggestion requests
+- Return the complete improved script, not just the changed parts
+
+Return only the improved script text in proper screenplay format.`;
+
+    const userPrompt = `Original script:
+${script}
+
+${context ? `Additional context: ${context}` : ''}
+
+Please apply the improvement suggestion described above and return the complete enhanced script.`;
+
+    console.log('🔄 Calling Claude API to apply suggestion...');
+    const ai = await callClaude({
+      model: 'anthropic/claude-sonnet-4',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      max_tokens: 2000,
+      temperature: 0.7
+    });
+
+    console.log('✅ Suggestion applied successfully');
+    const improvedScript = ai.choices?.[0]?.message?.content || script;
+    
+    res.json({
+      originalScript: script,
+      improvedScript: improvedScript,
+      appliedSuggestion: suggestion,
+      success: true,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (err: unknown) {
+    console.error('Apply suggestion error:', err);
+    res.status(500).json({ 
+      error: (err as Error).message || 'Failed to apply suggestion',
       success: false,
       timestamp: new Date().toISOString()
     });

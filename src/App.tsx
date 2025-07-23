@@ -9,7 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import GenerateRedirect from './pages/GenerateRedirect';
 import ScriptDoctor from './pages/ScriptDoctor';
-import ScriptStudio from './pages/ScriptStudio';
+import ScriptStudioNew from './pages/ScriptStudioNew';
 import Dashboard from './pages/Dashboard';
 import Pricing from './pages/Pricing';
 import BlogList from './pages/BlogList';
@@ -46,7 +46,7 @@ function App() {
             />
 
             {/* Semi-protected routes (accessible to guests with limited features) */}
-            <Route path="/studio" element={<ScriptStudio />} />
+            <Route path="/studio" element={<ScriptStudioNew />} />
             <Route path="/script-doctor" element={<ScriptDoctor />} />
 
             {/* Protected routes (require authentication) */}

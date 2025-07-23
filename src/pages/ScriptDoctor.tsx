@@ -8,7 +8,16 @@ import {
   Crown,
   Lightbulb,
   Undo2,
-  Redo2
+  Redo2,
+  Bold,
+  Italic,
+  Underline,
+  Type,
+  AlignLeft,
+  AlignCenter,
+  Copy,
+  Scissors,
+  Clipboard
 } from 'lucide-react';
 import { useAuthWithFallback } from '../components/AuthProvider';
 import ProjectContext from '../components/ProjectContext';
@@ -52,6 +61,10 @@ const ScriptDoctor: React.FC = () => {
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  // Apply suggestion state
+  const [isApplyingSuggestion, setIsApplyingSuggestion] = useState(false);
+  const [appliedSuggestions, setAppliedSuggestions] = useState<Set<string>>(new Set());
   
   // Usage tracking  
   const [dailyUsage, setDailyUsage] = useState(0);
@@ -276,6 +289,58 @@ const ScriptDoctor: React.FC = () => {
     setSelectedText('');
   };
 
+  // Apply suggestion function
+  const applySuggestion = async (suggestion: ScriptSuggestion) => {
+    if (appliedSuggestions.has(suggestion.id)) {
+      alert('This suggestion has already been applied.');
+      return;
+    }
+
+    setIsApplyingSuggestion(true);
+    
+    try {
+      const response = await fetch('/api/script-doctor/apply-suggestion', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          script: scriptContent,
+          suggestion: suggestion,
+          context: `This is a ${currentDraftName} script analysis.`
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to apply suggestion: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.improvedScript) {
+        // Update script content with improved version
+        setScriptContent(data.improvedScript);
+        addToHistory(data.improvedScript);
+        
+        // Mark suggestion as applied
+        setAppliedSuggestions(prev => new Set([...prev, suggestion.id]));
+        
+        // Clear suggestions to encourage re-analysis of improved script
+        setSuggestions([]);
+        
+        alert(`✅ Applied: ${suggestion.title}\n\nThe script has been improved based on this suggestion. Click "Analyze" again to see remaining improvements.`);
+      } else {
+        throw new Error(data.error || 'Failed to apply suggestion');
+      }
+      
+    } catch (error) {
+      console.error('Apply suggestion error:', error);
+      alert(`Failed to apply suggestion: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setIsApplyingSuggestion(false);
+    }
+  };
+
   // Export functions
   const exportTXT = () => {
     if (!scriptContent.trim()) {
@@ -307,6 +372,117 @@ const ScriptDoctor: React.FC = () => {
     const selection = window.getSelection();
     if (selection && selection.toString().trim()) {
       setSelectedText(selection.toString().trim());
+    }
+  };
+
+  // Rich text editing functions
+  const formatText = (command: string, value?: string) => {
+    if (textareaRef.current) {
+      const textarea = textareaRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      
+      if (selectedText) {
+        let formattedText = selectedText;
+        
+        switch (command) {
+          case 'bold':
+            formattedText = `**${selectedText}**`;
+            break;
+          case 'italic':
+            formattedText = `*${selectedText}*`;
+            break;
+          case 'underline':
+            formattedText = `_${selectedText}_`;
+            break;
+          case 'center':
+            formattedText = `                    ${selectedText}`;
+            break;
+          case 'uppercase':
+            formattedText = selectedText.toUpperCase();
+            break;
+          case 'character':
+            formattedText = selectedText.toUpperCase();
+            break;
+        }
+        
+        const newContent = textarea.value.substring(0, start) + formattedText + textarea.value.substring(end);
+        setScriptContent(newContent);
+        addToHistory(newContent);
+        
+        // Set cursor position after formatted text
+        setTimeout(() => {
+          textarea.focus();
+          textarea.setSelectionRange(start + formattedText.length, start + formattedText.length);
+        }, 0);
+      }
+    }
+  };
+
+  // Copy, cut, paste functions
+  const copyText = async () => {
+    if (textareaRef.current) {
+      const textarea = textareaRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      
+      if (selectedText) {
+        try {
+          await navigator.clipboard.writeText(selectedText);
+          alert('Text copied to clipboard');
+        } catch {
+          // Fallback for older browsers
+          textarea.select();
+          document.execCommand('copy');
+          alert('Text copied to clipboard');
+        }
+      }
+    }
+  };
+
+  const cutText = async () => {
+    if (textareaRef.current) {
+      const textarea = textareaRef.current;
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      const selectedText = textarea.value.substring(start, end);
+      
+      if (selectedText) {
+        try {
+          await navigator.clipboard.writeText(selectedText);
+          const newContent = textarea.value.substring(0, start) + textarea.value.substring(end);
+          setScriptContent(newContent);
+          addToHistory(newContent);
+          alert('Text cut to clipboard');
+        } catch {
+          alert('Cut operation failed');
+        }
+      }
+    }
+  };
+
+  const pasteText = async () => {
+    if (textareaRef.current) {
+      try {
+        const clipboardText = await navigator.clipboard.readText();
+        const textarea = textareaRef.current;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        
+        const newContent = textarea.value.substring(0, start) + clipboardText + textarea.value.substring(end);
+        setScriptContent(newContent);
+        addToHistory(newContent);
+        
+        // Set cursor position after pasted text
+        setTimeout(() => {
+          textarea.focus();
+          textarea.setSelectionRange(start + clipboardText.length, start + clipboardText.length);
+        }, 0);
+      } catch {
+        alert('Paste operation failed');
+      }
     }
   };
 
@@ -426,24 +602,6 @@ const ScriptDoctor: React.FC = () => {
                   <div className="flex items-center justify-between">
                     <h2 className="text-xl font-semibold text-gray-900">Script Editor</h2>
                     <div className="flex items-center space-x-2">
-                      {/* Undo/Redo */}
-                      <button
-                        onClick={undo}
-                        disabled={historyIndex <= 0}
-                        className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Undo"
-                      >
-                        <Undo2 className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={redo}
-                        disabled={historyIndex >= history.length - 1}
-                        className="p-2 text-gray-500 hover:text-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Redo"
-                      >
-                        <Redo2 className="h-4 w-4" />
-                      </button>
-                      
                       {/* Draft name */}
                       <input
                         value={currentDraftName}
@@ -451,6 +609,101 @@ const ScriptDoctor: React.FC = () => {
                         className="px-3 py-1 text-sm border border-gray-300 rounded"
                         placeholder="Script name"
                       />
+                    </div>
+                  </div>
+                  
+                  {/* Rich Text Toolbar */}
+                  <div className="flex items-center justify-between bg-gray-50 p-2 rounded-lg border">
+                    <div className="flex items-center space-x-1">
+                      {/* Undo/Redo */}
+                      <button
+                        onClick={undo}
+                        disabled={historyIndex <= 0}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Undo (Ctrl+Z)"
+                      >
+                        <Undo2 className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={redo}
+                        disabled={historyIndex >= history.length - 1}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        title="Redo (Ctrl+Y)"
+                      >
+                        <Redo2 className="h-4 w-4" />
+                      </button>
+                      
+                      <div className="h-4 w-px bg-gray-300 mx-2"></div>
+                      
+                      {/* Text Formatting */}
+                      <button
+                        onClick={() => formatText('bold')}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Bold (Ctrl+B)"
+                      >
+                        <Bold className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => formatText('italic')}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Italic (Ctrl+I)"
+                      >
+                        <Italic className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => formatText('underline')}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Underline (Ctrl+U)"
+                      >
+                        <Underline className="h-4 w-4" />
+                      </button>
+                      
+                      <div className="h-4 w-px bg-gray-300 mx-2"></div>
+                      
+                      {/* Screenplay Formatting */}
+                      <button
+                        onClick={() => formatText('character')}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Character Name (Uppercase)"
+                      >
+                        <Type className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={() => formatText('center')}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Center Text"
+                      >
+                        <AlignCenter className="h-4 w-4" />
+                      </button>
+                      
+                      <div className="h-4 w-px bg-gray-300 mx-2"></div>
+                      
+                      {/* Clipboard Operations */}
+                      <button
+                        onClick={copyText}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Copy (Ctrl+C)"
+                      >
+                        <Copy className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={cutText}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Cut (Ctrl+X)"
+                      >
+                        <Scissors className="h-4 w-4" />
+                      </button>
+                      <button
+                        onClick={pasteText}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Paste (Ctrl+V)"
+                      >
+                        <Clipboard className="h-4 w-4" />
+                      </button>
+                    </div>
+                    
+                    <div className="text-xs text-gray-500">
+                      Select text to format
                     </div>
                   </div>
                   
@@ -585,28 +838,53 @@ const ScriptDoctor: React.FC = () => {
                     <div
                       key={suggestion.id}
                       className={`p-3 rounded-lg border-l-4 ${
-                        suggestion.severity === 'high' 
+                        appliedSuggestions.has(suggestion.id)
+                          ? 'border-gray-400 bg-gray-100 opacity-75'
+                          : suggestion.severity === 'high' 
                           ? 'border-red-500 bg-red-50'
                           : suggestion.severity === 'medium'
                           ? 'border-yellow-500 bg-yellow-50'
                           : 'border-green-500 bg-green-50'
                       }`}
                     >
-                      <h4 className="font-medium text-gray-900 text-sm">
-                        {suggestion.title}
-                      </h4>
-                      <p className="text-xs text-gray-600 mt-1">
-                        {suggestion.description}
-                      </p>
-                      <span className={`inline-block mt-2 px-2 py-1 rounded text-xs ${
-                        suggestion.severity === 'high'
-                          ? 'bg-red-100 text-red-800'
-                          : suggestion.severity === 'medium'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-green-100 text-green-800'
-                      }`}>
-                        {suggestion.type}
-                      </span>
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-gray-900 text-sm flex items-center">
+                            {appliedSuggestions.has(suggestion.id) && (
+                              <span className="text-green-600 mr-2">✓</span>
+                            )}
+                            {suggestion.title}
+                          </h4>
+                          <p className="text-xs text-gray-600 mt-1">
+                            {suggestion.description}
+                          </p>
+                          <div className="flex items-center justify-between mt-2">
+                            <span className={`inline-block px-2 py-1 rounded text-xs ${
+                              suggestion.severity === 'high'
+                                ? 'bg-red-100 text-red-800'
+                                : suggestion.severity === 'medium'
+                                ? 'bg-yellow-100 text-yellow-800'
+                                : 'bg-green-100 text-green-800'
+                            }`}>
+                              {suggestion.type}
+                            </span>
+                            {!appliedSuggestions.has(suggestion.id) && (
+                              <button
+                                onClick={() => applySuggestion(suggestion)}
+                                disabled={isApplyingSuggestion}
+                                className="ml-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                              >
+                                {isApplyingSuggestion ? 'Applying...' : 'Apply'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      {appliedSuggestions.has(suggestion.id) && (
+                        <p className="text-xs text-green-600 mt-2 font-medium">
+                          ✓ Applied to script
+                        </p>
+                      )}
                     </div>
                   ))}
                 </div>

@@ -25,6 +25,49 @@ export default defineConfig({
   define: {
     global: 'globalThis',
   },
+  build: {
+    // 优化构建性能和CDN缓存
+    rollupOptions: {
+      output: {
+        // 手动分包，优化缓存
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom'],
+          ui: ['framer-motion', 'lucide-react'],
+          utils: ['zod', 'gray-matter']
+        },
+        // 文件名包含hash，利于CDN缓存
+        chunkFileNames: 'js/[name]-[hash].js',
+        entryFileNames: 'js/[name]-[hash].js',
+        assetFileNames: (assetInfo) => {
+          const info = assetInfo.name.split('.');
+          const ext = info[info.length - 1];
+          if (/\.(mp4|webm|ogg|mp3|wav|flac|aac)$/.test(assetInfo.name)) {
+            return `media/[name]-[hash].${ext}`;
+          }
+          if (/\.(png|jpe?g|gif|svg|ico|webp)$/.test(assetInfo.name)) {
+            return `img/[name]-[hash].${ext}`;
+          }
+          if (ext === 'css') {
+            return `css/[name]-[hash].${ext}`;
+          }
+          return `assets/[name]-[hash].${ext}`;
+        }
+      }
+    },
+    // 压缩设置
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // 生产环境移除console
+        drop_debugger: true
+      }
+    },
+    // 设置chunk大小警告限制
+    chunkSizeWarningLimit: 1000,
+    // 启用源码映射（可选，用于调试）
+    sourcemap: false
+  },
   server: {
     port: 5173,
     proxy: {

@@ -594,7 +594,7 @@ const ScriptStudio: React.FC = () => {
   // AI Assistant functions - Now shows preview instead of auto-applying
   const handleAiAction = async (action: string) => {
     let prompt = '';
-    let targetText = selectedText || scriptContent;
+    const targetText = selectedText || scriptContent;
     
     if (!targetText.trim()) {
       alert('Please select some text or generate a script first.');

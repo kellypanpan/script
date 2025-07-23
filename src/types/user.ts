@@ -18,6 +18,7 @@ export interface PlanFeatures {
   canExportFDX: boolean;
   canExportPDF: boolean;
   canUseAudio: boolean;
+  canUseAI: boolean;
   canUseStoryboard: boolean;
   canCollaborate: boolean;
   canSaveTemplates: boolean;
@@ -34,6 +35,7 @@ export const PLAN_FEATURES: Record<UserPlan, PlanFeatures> = {
     canExportFDX: false,
     canExportPDF: false,
     canUseAudio: false,
+    canUseAI: false,
     canUseStoryboard: false,
     canCollaborate: false,
     canSaveTemplates: false,
@@ -48,6 +50,7 @@ export const PLAN_FEATURES: Record<UserPlan, PlanFeatures> = {
     canExportFDX: true,
     canExportPDF: true,
     canUseAudio: true,
+    canUseAI: true,
     canUseStoryboard: false,
     canCollaborate: false,
     canSaveTemplates: true,
@@ -62,6 +65,7 @@ export const PLAN_FEATURES: Record<UserPlan, PlanFeatures> = {
     canExportFDX: true,
     canExportPDF: true,
     canUseAudio: true,
+    canUseAI: true,
     canUseStoryboard: true,
     canCollaborate: true,
     canSaveTemplates: true,

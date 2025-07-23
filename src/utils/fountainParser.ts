@@ -281,7 +281,7 @@ export class FountainParser {
   static toHTML(elements: FountainElement[]): string {
     return elements.map(element => {
       const className = `script-${element.type}`;
-      let content = this.applyEmphasis(element.content, element.emphasis);
+      const content = this.applyEmphasis(element.content, element.emphasis);
 
       switch (element.type) {
         case 'scene_heading':
