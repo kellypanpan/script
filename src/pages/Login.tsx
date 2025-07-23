@@ -220,7 +220,7 @@ const Login: React.FC = () => {
           >
             Try Demo Account
           </button>
-        </motion.form>
+        </motion.div>
 
         {/* Sign Up Link */}
         <motion.div 
