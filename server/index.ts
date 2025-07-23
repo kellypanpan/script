@@ -237,15 +237,24 @@ app.post('/api/generate-audio', async (req, res) => {
 
 // Script Doctor analyze endpoint
 app.post('/api/script-doctor/analyze', async (req, res) => {
+  console.log('📝 Script Doctor analyze request received:', { 
+    hasScript: !!req.body?.script, 
+    scriptLength: req.body?.script?.length || 0,
+    focus: req.body?.focus 
+  });
+  
   try {
     const { script, focus } = req.body;
 
     if (!script || script.trim().length === 0) {
+      console.log('❌ No script content provided');
       return res.status(400).json({ 
         error: 'Script content is required',
         success: false 
       });
     }
+
+    console.log('🚀 Starting AI analysis...');
 
     const systemPrompt = `You're a professional screenwriter and script doctor.
 Analyze the following short film script and provide 3–5 specific improvement suggestions to enhance:
@@ -278,6 +287,7 @@ ${script}
 
 ${focus && focus !== 'all' ? `Focus specifically on: ${focus}` : ''}`;
 
+    console.log('🔄 Calling Claude API...');
     const ai = await callClaude({
       model: 'anthropic/claude-sonnet-4',
       messages: [
@@ -288,6 +298,7 @@ ${focus && focus !== 'all' ? `Focus specifically on: ${focus}` : ''}`;
       temperature: 0.3
     });
 
+    console.log('✅ Claude API response received');
     const analysisText = ai.choices?.[0]?.message?.content || 'Failed to analyze script';
     
     try {
