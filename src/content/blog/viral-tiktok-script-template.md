@@ -2,6 +2,9 @@
 title: "How to Write a Viral TikTok Script in 30 Seconds (Free Template Inside)"
 slug: "viral-tiktok-script-template"
 date: "2025-07-18"
+image: "/images/blog/viral-tiktok-script.svg"
+category: "TikTok Scripts"
+excerpt: "Learn the proven 3-step formula that gets millions of views. Includes free template and real examples."
 ---
 
 > *“I keep filming but nothing sticks. How do I make TikToks that actually hook people?”*  

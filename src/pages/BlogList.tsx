@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Clock, User, Calendar, Filter } from 'lucide-react';
 import { getAllPosts, getAllCategories, BlogPost } from '../utils/blog';
+import LazyImage from '../components/LazyImage';
 
 export default function BlogList() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -173,10 +174,10 @@ function BlogCard({ post, index }: { post: BlogPost; index: number }) {
         {/* Image */}
         <div className="relative h-48 bg-gradient-to-br from-blue-100 to-purple-100 overflow-hidden">
           {post.image && post.image !== '/images/blog/default-post.jpg' ? (
-            <img
+            <LazyImage
               src={post.image}
               alt={post.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              className="w-full h-full group-hover:scale-105 transition-transform duration-300"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">

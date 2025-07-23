@@ -17,10 +17,12 @@ import {
   AlignCenter,
   Copy,
   Scissors,
-  Clipboard
+  Clipboard,
+  Maximize
 } from 'lucide-react';
 import { useAuthWithFallback } from '../components/AuthProvider';
 import ProjectContext from '../components/ProjectContext';
+import FullscreenEditor from '../components/FullscreenEditor';
 
 interface ScriptSuggestion {
   id: string;
@@ -70,6 +72,9 @@ const ScriptDoctor: React.FC = () => {
   const [dailyUsage, setDailyUsage] = useState(0);
   const maxDailyUsage = user ? 
     (user.plan === 'free' ? 1 : 999) : 1;
+  
+  // Fullscreen state
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Load drafts from localStorage on component mount
   useEffect(() => {
@@ -615,6 +620,16 @@ const ScriptDoctor: React.FC = () => {
                   {/* Rich Text Toolbar */}
                   <div className="flex items-center justify-between bg-gray-50 p-2 rounded-lg border">
                     <div className="flex items-center space-x-1">
+                      {/* Fullscreen Button */}
+                      <button
+                        onClick={() => setIsFullscreen(true)}
+                        className="p-1.5 text-gray-500 hover:text-gray-700 hover:bg-white rounded"
+                        title="Fullscreen Editor"
+                      >
+                        <Maximize className="h-4 w-4" />
+                      </button>
+                      
+                      <div className="h-4 w-px bg-gray-300 mx-2"></div>
                       {/* Undo/Redo */}
                       <button
                         onClick={undo}
@@ -928,6 +943,21 @@ const ScriptDoctor: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Editor */}
+      <FullscreenEditor
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        content={scriptContent}
+        onChange={(newContent) => {
+          setScriptContent(newContent);
+          addToHistory(newContent);
+        }}
+        title="Script Doctor - Fullscreen Editor"
+        placeholder="Your script content will appear here..."
+        onSave={saveDraft}
+        onExport={exportTXT}
+      />
     </motion.div>
   );
 };

@@ -1,8 +1,10 @@
 ---
- title: "What the Tomorrowland Fire Teaches Us About Viral Storytelling"
- slug: "tomorrowland-fire-viral-storytelling"
- date: "2025-07-17"
- image: "https://chatgpt.com/c/68648964-6c64-800f-920d-b04c5828bf2c"
+title: "What the Tomorrowland Fire Teaches Us About Viral Storytelling"
+slug: "tomorrowland-fire-viral-storytelling"
+date: "2025-07-17"
+image: "/images/blog/viral-storytelling.svg"
+category: "Storytelling"
+excerpt: "Learn powerful storytelling lessons from real events. How to turn breaking news into compelling short scripts using proven narrative techniques."
 ---
 
 # 🔥 What the Tomorrowland Fire Teaches Us About Viral Storytelling

@@ -2,6 +2,9 @@
 title: "How to Write a Short Film Script That Goes Viral (Step-by-Step AI Process)"
 slug: "how-to-write-viral-short-film-script"
 date: "2025-07-18"
+image: "/images/blog/short-film-writing.svg"
+category: "Short Films"
+excerpt: "Master the art of viral short film scripts. Step-by-step guide with proven techniques that get millions of views."
 ---
 
 # How to Write a Short Film Script That Goes Viral (Step-by-Step AI Process)

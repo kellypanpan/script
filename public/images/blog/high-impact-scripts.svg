@@ -1,0 +1,155 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="impactGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#7c2d12;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#dc2626;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#impactGradient)"/>
+  
+  <!-- Target/bullseye for "impact" -->
+  <g transform="translate(400, 225)">
+    <circle cx="0" cy="0" r="100" fill="none" stroke="#ffffff" stroke-width="3" opacity="0.3"/>
+    <circle cx="0" cy="0" r="75" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.5"/>
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#fbbf24" stroke-width="3" opacity="0.8"/>
+    <circle cx="0" cy="0" r="25" fill="#fbbf24" opacity="0.9"/>
+    
+    <!-- Impact text in center -->
+    <text x="0" y="-5" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#dc2626" text-anchor="middle">HIGH</text>
+    <text x="0" y="15" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#dc2626" text-anchor="middle">IMPACT</text>
+  </g>
+  
+  <!-- Script elements around the target -->
+  <!-- Element 1: Hook -->
+  <g transform="translate(150, 100)">
+    <rect x="0" y="0" width="120" height="60" fill="rgba(255,255,255,0.9)" stroke="#dc2626" stroke-width="2" rx="10"/>
+    <text x="60" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#dc2626" text-anchor="middle">HOOK</text>
+    <text x="60" y="35" font-family="Arial, sans-serif" font-size="10" fill="#1f2937" text-anchor="middle">Grab attention in</text>
+    <text x="60" y="48" font-family="Arial, sans-serif" font-size="10" fill="#1f2937" text-anchor="middle">first 3 seconds</text>
+    
+    <!-- Arrow pointing to center -->
+    <line x1="120" y1="60" x2="200" y2="150" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow)"/>
+  </g>
+  
+  <!-- Element 2: Conflict -->
+  <g transform="translate(530, 120)">
+    <rect x="0" y="0" width="120" height="60" fill="rgba(255,255,255,0.9)" stroke="#dc2626" stroke-width="2" rx="10"/>
+    <text x="60" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#dc2626" text-anchor="middle">CONFLICT</text>
+    <text x="60" y="35" font-family="Arial, sans-serif" font-size="10" fill="#1f2937" text-anchor="middle">Create tension</text>
+    <text x="60" y="48" font-family="Arial, sans-serif" font-size="10" fill="#1f2937" text-anchor="middle">and stakes</text>
+    
+    <!-- Arrow pointing to center -->
+    <line x1="0" y1="60" x2="-70" y2="120" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow)"/>
+  </g>
+  
+  <!-- Element 3: Characters -->
+  <g transform="translate(550, 300)">
+    <rect x="0" y="0" width="120" height="60" fill="rgba(255,255,255,0.9)" stroke="#dc2626" stroke-width="2" rx="10"/>
+    <text x="60" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#dc2626" text-anchor="middle">CHARACTERS</text>
+    <text x="60" y="35" font-family="Arial, sans-serif" font-size="10" fill="#1f2937" text-anchor="middle">Relatable &</text>
+    <text x="60" y="48" font-family="Arial, sans-serif" font-size="10" fill="#1f2937" text-anchor="middle">memorable</text>
+    
+    <!-- Arrow pointing to center -->
+    <line x1="0" y1="0" x2="-100" y2="-50" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow)"/>
+  </g>
+  
+  <!-- Element 4: Payoff -->
+  <g transform="translate(130, 290)">
+    <rect x="0" y="0" width="120" height="60" fill="rgba(255,255,255,0.9)" stroke="#dc2626" stroke-width="2" rx="10"/>
+    <text x="60" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#dc2626" text-anchor="middle">PAYOFF</text>
+    <text x="60" y="35" font-family="Arial, sans-serif" font-size="10" fill="#1f2937" text-anchor="middle">Satisfying</text>
+    <text x="60" y="48" font-family="Arial, sans-serif" font-size="10" fill="#1f2937" text-anchor="middle">conclusion</text>
+    
+    <!-- Arrow pointing to center -->
+    <line x1="120" y1="0" x2="150" y2="-40" stroke="#fbbf24" stroke-width="2" marker-end="url(#arrow)"/>
+  </g>
+  
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <polygon points="0,0 0,6 9,3" fill="#fbbf24"/>
+    </marker>
+  </defs>
+  
+  <!-- Statistics/metrics -->
+  <g transform="translate(50, 50)" font-family="Arial, sans-serif" fill="#ffffff">
+    <rect x="0" y="0" width="150" height="80" fill="rgba(0,0,0,0.3)" stroke="#fbbf24" stroke-width="1" rx="5"/>
+    <text x="75" y="20" font-size="12" font-weight="bold" text-anchor="middle">Engagement Rate</text>
+    <text x="75" y="35" font-size="24" font-weight="bold" text-anchor="middle" fill="#fbbf24">87%</text>
+    <text x="75" y="50" font-size="10" text-anchor="middle">vs 12% average</text>
+    <text x="75" y="65" font-size="10" text-anchor="middle">short-form content</text>
+  </g>
+  
+  <g transform="translate(600, 50)" font-family="Arial, sans-serif" fill="#ffffff">
+    <rect x="0" y="0" width="150" height="80" fill="rgba(0,0,0,0.3)" stroke="#fbbf24" stroke-width="1" rx="5"/>
+    <text x="75" y="20" font-size="12" font-weight="bold" text-anchor="middle">Completion Rate</text>
+    <text x="75" y="35" font-size="24" font-weight="bold" text-anchor="middle" fill="#fbbf24">94%</text>
+    <text x="75" y="50" font-size="10" text-anchor="middle">viewers watch</text>
+    <text x="75" y="65" font-size="10" text-anchor="middle">to the end</text>
+  </g>
+  
+  <!-- AI enhancement indicator -->
+  <g transform="translate(300, 50)">
+    <rect x="0" y="0" width="200" height="30" fill="rgba(255,255,255,0.1)" stroke="#ffffff" stroke-width="1" rx="15"/>
+    <text x="100" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">AI-Enhanced Scripts</text>
+    
+    <!-- Processing indicator -->
+    <circle cx="180" cy="15" r="8" fill="none" stroke="#fbbf24" stroke-width="2">
+      <animate attributeName="stroke-dasharray" values="0 50;25 25;0 50" dur="2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Script quality indicators -->
+  <g opacity="0.8">
+    <!-- Checkmarks -->
+    <g transform="translate(100, 200)" fill="#10b981">
+      <circle cx="0" cy="0" r="12" fill="#10b981"/>
+      <path d="M-5,0 L-2,3 L5,-5" stroke="#ffffff" stroke-width="2" fill="none"/>
+      <text x="20" y="5" font-family="Arial, sans-serif" font-size="12" fill="#ffffff">Clear structure</text>
+    </g>
+    
+    <g transform="translate(100, 230)" fill="#10b981">
+      <circle cx="0" cy="0" r="12" fill="#10b981"/>
+      <path d="M-5,0 L-2,3 L5,-5" stroke="#ffffff" stroke-width="2" fill="none"/>
+      <text x="20" y="5" font-family="Arial, sans-serif" font-size="12" fill="#ffffff">Emotional beats</text>
+    </g>
+    
+    <g transform="translate(500, 200)" fill="#10b981">
+      <circle cx="0" cy="0" r="12" fill="#10b981"/>
+      <path d="M-5,0 L-2,3 L5,-5" stroke="#ffffff" stroke-width="2" fill="none"/>
+      <text x="20" y="5" font-family="Arial, sans-serif" font-size="12" fill="#ffffff">Visual storytelling</text>
+    </g>
+    
+    <g transform="translate(500, 230)" fill="#10b981">
+      <circle cx="0" cy="0" r="12" fill="#10b981"/>
+      <path d="M-5,0 L-2,3 L5,-5" stroke="#ffffff" stroke-width="2" fill="none"/>
+      <text x="20" y="5" font-family="Arial, sans-serif" font-size="12" fill="#ffffff">Strong dialogue</text>
+    </g>
+  </g>
+  
+  <!-- Energy waves -->
+  <g opacity="0.4">
+    <circle cx="400" cy="225" r="120" fill="none" stroke="#fbbf24" stroke-width="1">
+      <animate attributeName="stroke-opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="225" r="140" fill="none" stroke="#fbbf24" stroke-width="1">
+      <animate attributeName="stroke-opacity" values="0.4;0.8;0.4" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="400" cy="225" r="160" fill="none" stroke="#fbbf24" stroke-width="1">
+      <animate attributeName="stroke-opacity" values="0.4;0.8;0.4" dur="4s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Title -->
+  <text x="400" y="420" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#ffffff" text-anchor="middle" filter="url(#glow)">High-Impact Short Scripts</text>
+</svg>

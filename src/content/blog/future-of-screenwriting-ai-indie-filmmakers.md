@@ -2,6 +2,9 @@
 title: "The Future of Screenwriting: How AI is Empowering Indie Filmmakers"
 slug: "future-of-screenwriting-ai-indie-filmmakers"
 date: "2025-07-18"
+image: "/images/blog/future-screenwriting-ai.svg"
+category: "AI Tools"
+excerpt: "Discover how AI is revolutionizing independent filmmaking. From script generation to production workflow, see the tools changing the industry."
 ---
 
 # The Future of Screenwriting: How AI is Empowering Indie Filmmakers

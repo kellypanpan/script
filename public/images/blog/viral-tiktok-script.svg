@@ -1,0 +1,77 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="tiktokGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF0050;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#00F2EA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF0050;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="phoneGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f2937;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#374151;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#tiktokGradient)" opacity="0.1"/>
+  <rect width="800" height="450" fill="#0f172a"/>
+  
+  <!-- Phone mockup -->
+  <rect x="300" y="80" width="200" height="300" rx="20" fill="url(#phoneGradient)" stroke="#4f46e5" stroke-width="2"/>
+  <rect x="310" y="100" width="180" height="260" rx="10" fill="#000"/>
+  
+  <!-- TikTok interface elements -->
+  <circle cx="460" cy="130" r="8" fill="#ff0050"/>
+  <rect x="320" y="150" width="160" height="4" rx="2" fill="#00f2ea" opacity="0.8"/>
+  <rect x="320" y="160" width="120" height="3" rx="1.5" fill="#ffffff" opacity="0.6"/>
+  <rect x="320" y="170" width="140" height="3" rx="1.5" fill="#ffffff" opacity="0.6"/>
+  
+  <!-- Video content area -->
+  <rect x="320" y="190" width="160" height="120" rx="8" fill="#1e293b" stroke="#00f2ea" stroke-width="1"/>
+  <polygon points="360,230 360,270 390,250" fill="#00f2ea"/>
+  
+  <!-- Engagement icons -->
+  <circle cx="470" cy="220" r="12" fill="#ff0050" opacity="0.9"/>
+  <path d="M465,215 L470,225 L475,215" stroke="white" stroke-width="2" fill="none"/>
+  
+  <circle cx="470" cy="250" r="12" fill="#00f2ea" opacity="0.9"/>
+  <path d="M465,250 Q470,245 475,250 Q470,255 465,250" fill="white"/>
+  
+  <circle cx="470" cy="280" r="12" fill="#fbbf24" opacity="0.9"/>
+  <path d="M470,275 L470,285 M465,280 L475,280" stroke="white" stroke-width="2"/>
+  
+  <!-- Script lines floating -->
+  <text x="120" y="150" font-family="Courier New, monospace" font-size="14" fill="#00f2ea" opacity="0.8">INT. COFFEE SHOP - DAY</text>
+  <text x="120" y="170" font-family="Courier New, monospace" font-size="12" fill="#ffffff" opacity="0.7">MAYA nervously approaches</text>
+  <text x="120" y="190" font-family="Courier New, monospace" font-size="12" fill="#ffffff" opacity="0.7">the counter...</text>
+  
+  <text x="540" y="200" font-family="Courier New, monospace" font-size="14" fill="#ff0050" opacity="0.8">MAYA</text>
+  <text x="540" y="220" font-family="Courier New, monospace" font-size="12" fill="#ffffff" opacity="0.7">(stammering)</text>
+  <text x="540" y="240" font-family="Courier New, monospace" font-size="12" fill="#ffffff" opacity="0.7">Um, can I get a...</text>
+  <text x="540" y="260" font-family="Courier New, monospace" font-size="12" fill="#ffffff" opacity="0.7">time travel latte?</text>
+  
+  <!-- Title -->
+  <text x="400" y="50" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#ffffff" text-anchor="middle">Viral TikTok Scripts</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="100" cy="100" r="3" fill="#00f2ea" opacity="0.6">
+    <animate attributeName="opacity" values="0.6;1;0.6" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="700" cy="120" r="4" fill="#ff0050" opacity="0.7">
+    <animate attributeName="opacity" values="0.7;1;0.7" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="150" cy="350" r="2" fill="#fbbf24" opacity="0.8">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="1.5s" repeatCount="indefinite"/>
+  </circle>
+  
+  <!-- Sparkle effects -->
+  <g opacity="0.8">
+    <path d="M200,120 L205,125 L200,130 L195,125 Z" fill="#00f2ea">
+      <animateTransform attributeName="transform" type="rotate" values="0 200 125;360 200 125" dur="4s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  <g opacity="0.6">
+    <path d="M600,300 L605,305 L600,310 L595,305 Z" fill="#ff0050">
+      <animateTransform attributeName="transform" type="rotate" values="0 600 305;360 600 305" dur="3s" repeatCount="indefinite"/>
+    </path>
+  </g>
+</svg>

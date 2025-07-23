@@ -2,6 +2,9 @@
 title: "50 Short Script Ideas for TikTok, Reels & YouTube Shorts (with Templates)"
 slug: "50-short-script-ideas-tiktok-reels-youtube"
 date: "2025-07-18"
+image: "/images/blog/script-ideas-creative.svg"
+category: "TikTok Scripts"
+excerpt: "Get 50 ready-to-use script ideas for viral short-form content. Includes comedy, horror, romance, and brand concepts with AI prompts."
 ---
 
 # 50 Short Script Ideas for TikTok, Reels & YouTube Shorts (with Templates)

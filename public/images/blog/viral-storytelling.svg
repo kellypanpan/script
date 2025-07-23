@@ -1,0 +1,161 @@
+<svg width="800" height="450" viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="viralGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#581c87;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#7c3aed;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#a855f7;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="viralCenter" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#fbbf24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#f59e0b;stop-opacity:0.3" />
+    </radialGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="450" fill="url(#viralGradient)"/>
+  
+  <!-- Central viral explosion -->
+  <g transform="translate(400, 225)">
+    <circle cx="0" cy="0" r="60" fill="url(#viralCenter)" opacity="0.8">
+      <animate attributeName="r" values="60;80;60" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="0" cy="0" r="40" fill="none" stroke="#fbbf24" stroke-width="3">
+      <animate attributeName="stroke-opacity" values="0.8;1;0.8" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <text x="0" y="-5" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#581c87" text-anchor="middle">VIRAL</text>
+    <text x="0" y="15" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#581c87" text-anchor="middle">STORY</text>
+  </g>
+  
+  <!-- Viral spread lines -->
+  <g stroke="#fbbf24" stroke-width="2" opacity="0.7">
+    <line x1="400" y1="225" x2="200" y2="100">
+      <animate attributeName="stroke-dasharray" values="0 300;150 150;0 300" dur="4s" repeatCount="indefinite"/>
+    </line>
+    <line x1="400" y1="225" x2="600" y2="100">
+      <animate attributeName="stroke-dasharray" values="0 300;150 150;0 300" dur="3.5s" repeatCount="indefinite"/>
+    </line>
+    <line x1="400" y1="225" x2="150" y2="350">
+      <animate attributeName="stroke-dasharray" values="0 350;175 175;0 350" dur="4.2s" repeatCount="indefinite"/>
+    </line>
+    <line x1="400" y1="225" x2="650" y2="350">
+      <animate attributeName="stroke-dasharray" values="0 350;175 175;0 350" dur="3.8s" repeatCount="indefinite"/>
+    </line>
+  </g>
+  
+  <!-- Story elements -->
+  <!-- Element 1: Hook -->
+  <g transform="translate(150, 80)">
+    <circle cx="25" cy="25" r="25" fill="rgba(255,255,255,0.9)" stroke="#a855f7" stroke-width="2"/>
+    <text x="25" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#581c87" text-anchor="middle">HOOK</text>
+    <text x="25" y="32" font-family="Arial, sans-serif" font-size="8" fill="#581c87" text-anchor="middle">0-3s</text>
+    <animateTransform attributeName="transform" type="translate" values="150,80;160,70;150,80" dur="2s" repeatCount="indefinite"/>
+  </g>
+  
+  <!-- Element 2: Build -->
+  <g transform="translate(570, 80)">
+    <circle cx="25" cy="25" r="25" fill="rgba(255,255,255,0.9)" stroke="#a855f7" stroke-width="2"/>
+    <text x="25" y="20" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#581c87" text-anchor="middle">BUILD</text>
+    <text x="25" y="32" font-family="Arial, sans-serif" font-size="8" fill="#581c87" text-anchor="middle">3-7s</text>
+    <animateTransform attributeName="transform" type="translate" values="570,80;580,70;570,80" dur="2.2s" repeatCount="indefinite"/>
+  </g>
+  
+  <!-- Element 3: Climax -->
+  <g transform="translate(120, 330)">
+    <circle cx="25" cy="25" r="25" fill="rgba(255,255,255,0.9)" stroke="#a855f7" stroke-width="2"/>
+    <text x="25" y="18" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#581c87" text-anchor="middle">CLIMAX</text>
+    <text x="25" y="32" font-family="Arial, sans-serif" font-size="8" fill="#581c87" text-anchor="middle">7-12s</text>
+    <animateTransform attributeName="transform" type="translate" values="120,330;130,320;120,330" dur="1.8s" repeatCount="indefinite"/>
+  </g>
+  
+  <!-- Element 4: Payoff -->
+  <g transform="translate(620, 330)">
+    <circle cx="25" cy="25" r="25" fill="rgba(255,255,255,0.9)" stroke="#a855f7" stroke-width="2"/>
+    <text x="25" y="18" font-family="Arial, sans-serif" font-size="9" font-weight="bold" fill="#581c87" text-anchor="middle">PAYOFF</text>
+    <text x="25" y="32" font-family="Arial, sans-serif" font-size="8" fill="#581c87" text-anchor="middle">12-15s</text>
+    <animateTransform attributeName="transform" type="translate" values="620,330;630,320;620,330" dur="2.5s" repeatCount="indefinite"/>
+  </g>
+  
+  <!-- Engagement metrics -->
+  <g transform="translate(50, 180)">
+    <rect x="0" y="0" width="120" height="90" fill="rgba(0,0,0,0.3)" stroke="#fbbf24" stroke-width="2" rx="10"/>
+    <text x="60" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">ENGAGEMENT</text>
+    
+    <!-- Like icon -->
+    <circle cx="25" cy="35" r="8" fill="#ef4444"/>
+    <text x="25" y="40" font-family="Arial, sans-serif" font-size="8" fill="#ffffff" text-anchor="middle">♥</text>
+    <text x="45" y="40" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">2.3M</text>
+    
+    <!-- Share icon -->
+    <circle cx="25" cy="55" r="8" fill="#10b981"/>
+    <text x="25" y="60" font-family="Arial, sans-serif" font-size="8" fill="#ffffff" text-anchor="middle">↗</text>
+    <text x="45" y="60" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">850K</text>
+    
+    <!-- Comment icon -->
+    <circle cx="25" cy="75" r="8" fill="#3b82f6"/>
+    <text x="25" y="80" font-family="Arial, sans-serif" font-size="8" fill="#ffffff" text-anchor="middle">💬</text>
+    <text x="45" y="80" font-family="Arial, sans-serif" font-size="10" fill="#ffffff">127K</text>
+  </g>
+  
+  <!-- Platform spread -->
+  <g transform="translate(630, 180)">
+    <rect x="0" y="0" width="120" height="90" fill="rgba(0,0,0,0.3)" stroke="#fbbf24" stroke-width="2" rx="10"/>
+    <text x="60" y="20" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#ffffff" text-anchor="middle">PLATFORMS</text>
+    
+    <!-- TikTok -->
+    <rect x="10" y="25" width="25" height="15" fill="#000000" rx="3"/>
+    <text x="22" y="35" font-family="Arial, sans-serif" font-size="6" fill="#ffffff" text-anchor="middle">TikTok</text>
+    <text x="45" y="35" font-family="Arial, sans-serif" font-size="8" fill="#ffffff">1.8M</text>
+    
+    <!-- Instagram -->
+    <rect x="10" y="45" width="25" height="15" fill="#e1306c" rx="3"/>
+    <text x="22" y="55" font-family="Arial, sans-serif" font-size="6" fill="#ffffff" text-anchor="middle">Insta</text>
+    <text x="45" y="55" font-family="Arial, sans-serif" font-size="8" fill="#ffffff">920K</text>
+    
+    <!-- YouTube -->
+    <rect x="10" y="65" width="25" height="15" fill="#ff0000" rx="3"/>
+    <text x="22" y="75" font-family="Arial, sans-serif" font-size="6" fill="#ffffff" text-anchor="middle">YT</text>
+    <text x="45" y="75" font-family="Arial, sans-serif" font-size="8" fill="#ffffff">1.2M</text>
+  </g>
+  
+  <!-- Tomorrowland reference -->
+  <g transform="translate(300, 50)">
+    <rect x="0" y="0" width="200" height="40" fill="rgba(255,187,36,0.2)" stroke="#fbbf24" stroke-width="2" rx="20"/>
+    <text x="100" y="20" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">Inspired by</text>
+    <text x="100" y="35" font-family="Arial, sans-serif" font-size="12" fill="#fbbf24" text-anchor="middle">Tomorrowland Fire Stories</text>
+  </g>
+  
+  <!-- Viral spread animation particles -->
+  <g opacity="0.6">
+    <circle cx="300" cy="150" r="3" fill="#fbbf24">
+      <animateTransform attributeName="transform" type="translate" values="0,0;100,75;0,0" dur="3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="500" cy="150" r="3" fill="#a855f7">
+      <animateTransform attributeName="transform" type="translate" values="0,0;-100,75;0,0" dur="2.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="300" cy="300" r="3" fill="#10b981">
+      <animateTransform attributeName="transform" type="translate" values="0,0;100,-75;0,0" dur="3.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="500" cy="300" r="3" fill="#ef4444">
+      <animateTransform attributeName="transform" type="translate" values="0,0;-100,-75;0,0" dur="2.8s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+  
+  <!-- Growth arrows -->
+  <g stroke="#fbbf24" stroke-width="3" fill="none" opacity="0.8">
+    <path d="M350,180 Q320,160 290,140">
+      <animate attributeName="stroke-dasharray" values="0 100;50 50;0 100" dur="2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M450,180 Q480,160 510,140">
+      <animate attributeName="stroke-dasharray" values="0 100;50 50;0 100" dur="2.2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M350,270 Q320,290 290,310">
+      <animate attributeName="stroke-dasharray" values="0 100;50 50;0 100" dur="2.5s" repeatCount="indefinite"/>
+    </path>
+    <path d="M450,270 Q480,290 510,310">
+      <animate attributeName="stroke-dasharray" values="0 100;50 50;0 100" dur="1.8s" repeatCount="indefinite"/>
+    </path>
+  </g>
+  
+  <!-- Title -->
+  <text x="400" y="420" font-family="Arial, sans-serif" font-size="26" font-weight="bold" fill="#ffffff" text-anchor="middle">Viral Storytelling Masterclass</text>
+</svg>

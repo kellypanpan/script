@@ -9,9 +9,11 @@ import {
   Settings,
   Zap,
   CheckCircle,
-  AlertTriangle
+  AlertTriangle,
+  Maximize
 } from 'lucide-react';
 import { FountainParser, FountainElement } from '../utils/fountainParser';
+import FullscreenEditor from './FullscreenEditor';
 
 export type ScriptFormat = 'fountain' | 'screenplay' | 'dialogue' | 'treatment';
 
@@ -55,6 +57,7 @@ const ProfessionalScriptEditor: React.FC<ProfessionalScriptEditorProps> = ({
     autoFormat: true,
     showLineNumbers: false
   });
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -264,6 +267,15 @@ const ProfessionalScriptEditor: React.FC<ProfessionalScriptEditorProps> = ({
             title="Format Settings"
           >
             <Settings className="h-4 w-4" />
+          </button>
+
+          {/* Fullscreen Button */}
+          <button
+            onClick={() => setIsFullscreen(true)}
+            className="p-2 text-gray-400 hover:text-gray-600 rounded-md transition-colors"
+            title="Fullscreen Editor"
+          >
+            <Maximize className="h-4 w-4" />
           </button>
 
           {/* Export Menu */}
@@ -510,6 +522,28 @@ const ProfessionalScriptEditor: React.FC<ProfessionalScriptEditorProps> = ({
           border-top: 1px dashed #ccc;
         }
       `}</style>
+
+      {/* Fullscreen Editor */}
+      <FullscreenEditor
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        content={localContent}
+        onChange={(newContent) => {
+          setLocalContent(newContent);
+          onChange(newContent);
+        }}
+        title={`${format.charAt(0).toUpperCase() + format.slice(1)} Script Editor`}
+        placeholder={`Type your ${format} script here...\n\n${
+          format === 'fountain' ? 
+            'Example:\nINT. COFFEE SHOP - DAY\n\nSARAH enters, looking around nervously.\n\nSARAH\nIs this seat taken?' :
+            'Start writing your script...'
+        }`}
+        onSave={() => {
+          // Could add save functionality here
+          console.log('Save script');
+        }}
+        onExport={() => exportScript('fountain')}
+      />
     </div>
   );
 };

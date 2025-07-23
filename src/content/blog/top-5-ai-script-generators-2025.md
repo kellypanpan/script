@@ -2,6 +2,9 @@
 title: "Top 5 AI Script Generators for Creators in 2025 (With Use Cases & Comparisons)"
 slug: "top-5-ai-script-generators-2025"
 date: "2025-07-18"
+image: "/images/blog/ai-script-generators.svg"
+category: "AI Tools"
+excerpt: "Compare the best AI script generators of 2025. See features, pricing, and which tool works best for your content."
 ---
 
 # Top 5 AI Script Generators for Creators in 2025 (With Use Cases & Comparisons)

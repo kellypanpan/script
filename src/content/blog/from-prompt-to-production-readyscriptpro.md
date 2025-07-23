@@ -2,6 +2,9 @@
 title: "From Prompt to Production: How to Use ReadyScriptPro to Shoot Your Short Film"
 slug: "from-prompt-to-production-readyscriptpro"
 date: "2025-07-18"
+image: "/images/blog/production-workflow.svg"
+category: "Production"
+excerpt: "Complete guide from AI-generated script to finished short film. Learn the 9-step workflow that indie filmmakers use to create viral content."
 ---
 
 # From Prompt to Production: How to Use ReadyScriptPro to Shoot Your Short Film
