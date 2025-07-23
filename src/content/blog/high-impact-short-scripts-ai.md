@@ -2,7 +2,7 @@
 title: "How to Write High-Impact Short Scripts with AI (Pro Tips from a Screenwriter)"
 slug: "high-impact-short-scripts-ai"
 date: "2025-07-18"
-image: "https://images.unsplash.com/photo-1526378722596-0d3829f01c2a?auto=format&fit=crop&w=1200&h=600&q=80"
+image: "/images/blog/high-impact-scripts.svg"
 ---
 
 # How to Write High-Impact Short Scripts with AI (Pro Tips from a Screenwriter)
