@@ -24,7 +24,8 @@ import {
   Eye,
   History,
   Sidebar,
-  Play
+  Play,
+  Maximize
 } from 'lucide-react';
 import { generateScript } from '../utils/scriptGenerator';
 import { analyzeScript, rewriteText } from '../api/script-doctor';
@@ -37,6 +38,7 @@ import { useAuthWithFallback } from '../components/AuthProvider';
 import ProjectContext from '../components/ProjectContext';
 import VersionHistory from '../components/VersionHistory';
 import LoginPrompt from '../components/LoginPrompt';
+import FullscreenEditor from '../components/FullscreenEditor';
 import { VersionHistoryManager } from '../utils/versionHistory';
 
 interface ScriptGenerationInput {
@@ -104,6 +106,7 @@ const ScriptStudioNew: React.FC = () => {
     scenes: 0,
     characters: 0
   });
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   // Auto-save cleanup function
   const autoSaveCleanup = useRef<(() => void) | null>(null);
@@ -235,8 +238,39 @@ const ScriptStudioNew: React.FC = () => {
 
   // Manual save function
   const handleSaveProject = useCallback(() => {
-    if (!currentProject || !scriptContent) {
-      alert('No project to save or content is empty');
+    if (!scriptContent) {
+      alert('No content to save');
+      return;
+    }
+
+    // If no current project, create a new one
+    if (!currentProject) {
+      const newProject = {
+        id: Date.now().toString(),
+        title: `Script ${new Date().toLocaleDateString()}`,
+        content: scriptContent,
+        genre: scriptInput.genre,
+        platform: scriptInput.platform,
+        tags: scriptInput.keywords.split(',').map(k => k.trim()).filter(k => k),
+        createdAt: new Date(),
+        lastEdited: new Date(),
+        wordCount: scriptStats.wordCount,
+        estimatedDuration: scriptStats.estimatedDuration,
+        sceneCount: scriptStats.scenes,
+        version: 1,
+        isTemplate: false
+      };
+      
+      // Save to localStorage
+      const savedProjects = localStorage.getItem('scriptProjects');
+      const projects = savedProjects ? JSON.parse(savedProjects) : [];
+      projects.unshift(newProject);
+      localStorage.setItem('scriptProjects', JSON.stringify(projects));
+      setCurrentProject(newProject);
+      setLastSaved(new Date());
+      
+      console.log('New project created and saved:', newProject.title);
+      alert('New project created and saved successfully!');
       return;
     }
 
@@ -1017,6 +1051,15 @@ const ScriptStudioNew: React.FC = () => {
                       )}
                     </div>
 
+                    {/* Fullscreen Button */}
+                    <button
+                      onClick={() => setIsFullscreen(true)}
+                      className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                      title="Fullscreen Editor"
+                    >
+                      <Maximize className="w-4 h-4" />
+                    </button>
+
                     {/* Save */}
                     <button
                       onClick={handleSaveProject}
@@ -1208,6 +1251,34 @@ const ScriptStudioNew: React.FC = () => {
         title={loginPrompt.title}
         message={loginPrompt.message}
         actionType={loginPrompt.actionType}
+      />
+
+      {/* Fullscreen Editor */}
+      <FullscreenEditor
+        isOpen={isFullscreen}
+        onClose={() => setIsFullscreen(false)}
+        content={scriptContent}
+        onChange={(newContent) => {
+          setScriptContent(newContent);
+          addToHistory(newContent);
+          updateScriptStats(newContent);
+        }}
+        title="AI Script Studio - Fullscreen Editor"
+        placeholder="Your generated script will appear here..."
+        onSave={handleSaveProject}
+        onExport={() => {
+          if (scriptContent) {
+            const blob = new Blob([scriptContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${currentProject?.title || 'script'}.txt`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+          }
+        }}
       />
     </div>
   );
