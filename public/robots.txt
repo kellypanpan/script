@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://readyscriptpro.com/sitemap.xml
+
+# Disallow private/sensitive pages
+Disallow: /payment/
+Disallow: /dashboard
+Disallow: /api/
+
+# Allow important pages for SEO
+Allow: /pricing
+Allow: /studio
+Allow: /script-doctor
+Allow: /blog/
+Allow: /login
+Allow: /register
+
+# Crawl delay (optional - be respectful to search engines)
+Crawl-delay: 1
