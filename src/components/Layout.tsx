@@ -17,11 +17,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   // Unified navigation for all users (authentication control handled at route level)
   const navigation = [
     { name: 'Home', href: '/' },
-    { name: 'Dashboard', href: '/dashboard' },
     { name: 'Script Generator', href: '/studio' },
     { name: 'Script Doctor', href: '/script-doctor' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'Blog', href: '/blog' },
+    { name: 'Dashboard', href: '/dashboard' },
   ];
   const isActive = (path: string) => location.pathname === path;
 
