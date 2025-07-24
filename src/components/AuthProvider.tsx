@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { User, UserPlan, PLAN_FEATURES, PlanFeatures } from '../types/user';
+import { supabase, getUserProfile, createUserProfile, updateUserProfile, UserProfile } from '../lib/supabase';
+import type { User as SupabaseUser, Session } from '@supabase/supabase-js';
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
-  updatePlan: (plan: UserPlan) => void;
-  updateProfile: (updates: Partial<User>) => void;
+  updateUserPlan: (plan: UserPlan) => Promise<void>;
+  updateProfile: (updates: Partial<User>) => Promise<void>;
   hasFeature: (feature: keyof PlanFeatures) => boolean;
   canUseFeature: (feature: keyof PlanFeatures) => boolean;
 }
@@ -20,125 +22,145 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-// Local storage keys
-const AUTH_STORAGE_KEY = 'scriptpro_auth';
-const USER_STORAGE_KEY = 'scriptpro_user';
-
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize auth state from localStorage
+  // Initialize Supabase auth state
   useEffect(() => {
-    const initializeAuth = () => {
+    const initializeAuth = async () => {
       try {
-        const authData = localStorage.getItem(AUTH_STORAGE_KEY);
-        const userData = localStorage.getItem(USER_STORAGE_KEY);
+        // Get initial session
+        const { data: { session } } = await supabase.auth.getSession();
         
-        if (authData === 'true' && userData) {
-          const parsedUser = JSON.parse(userData);
-          setUser(parsedUser);
+        if (session?.user) {
+          await handleUserSession(session.user);
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
-        // Clear potentially corrupted data
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-        localStorage.removeItem(USER_STORAGE_KEY);
       } finally {
         setIsLoading(false);
       }
     };
 
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        await handleUserSession(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+      }
+    });
+
     initializeAuth();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const login = async (email: string, password: string): Promise<void> => {
-    setIsLoading(true);
-    
+  // Handle user session and profile
+  const handleUserSession = async (supabaseUser: SupabaseUser) => {
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // For demo purposes, create a mock user based on email
-      const mockUser: User = {
-        id: `user_${Date.now()}`,
-        email,
-        name: email.split('@')[0].replace(/[^a-zA-Z]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-        plan: email.includes('demo') ? 'pro' : 'free', // Demo users get pro plan
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      // Store auth state
-      localStorage.setItem(AUTH_STORAGE_KEY, 'true');
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(mockUser));
+      let profile = await getUserProfile(supabaseUser.id);
       
-      setUser(mockUser);
+      // Create profile if it doesn't exist
+      if (!profile) {
+        const created = await createUserProfile(supabaseUser);
+        if (created) {
+          profile = await getUserProfile(supabaseUser.id);
+        }
+      }
+
+      if (profile) {
+        setUser({
+          id: profile.id,
+          email: profile.email,
+          name: profile.name,
+          plan: profile.plan,
+          createdAt: profile.created_at,
+          avatar: supabaseUser.user_metadata?.avatar_url || null
+        });
+      }
     } catch (error) {
-      throw new Error('Login failed. Please check your credentials.');
-    } finally {
-      setIsLoading(false);
+      console.error('Error handling user session:', error);
     }
+  };
+
+  // Authentication methods
+  const login = async (email: string, password: string): Promise<void> => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // handleUserSession will be called by onAuthStateChange
   };
 
   const register = async (email: string, password: string, name: string): Promise<void> => {
-    setIsLoading(true);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name
+        }
+      }
+    });
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // handleUserSession will be called by onAuthStateChange when confirmed
+  };
+
+  const logout = async (): Promise<void> => {
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    // User state will be cleared by onAuthStateChange
+  };
+
+  // Profile management
+  const updateUserPlan = async (plan: UserPlan): Promise<void> => {
+    if (!user) return;
     
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      const newUser: User = {
-        id: `user_${Date.now()}`,
-        email,
-        name,
-        plan: 'free', // New users start with free plan
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      // Store auth state
-      localStorage.setItem(AUTH_STORAGE_KEY, 'true');
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));
+      const success = await updateUserProfile(user.id, { plan });
       
-      setUser(newUser);
+      if (success) {
+        setUser(prev => prev ? { ...prev, plan } : null);
+      } else {
+        throw new Error('Failed to update plan');
+      }
     } catch (error) {
-      throw new Error('Registration failed. Please try again.');
-    } finally {
-      setIsLoading(false);
+      console.error('Error updating user plan:', error);
+      throw error;
     }
   };
 
-  const logout = () => {
-    // Clear auth state
-    localStorage.removeItem(AUTH_STORAGE_KEY);
-    localStorage.removeItem(USER_STORAGE_KEY);
-    setUser(null);
-  };
-
-  const updatePlan = (plan: UserPlan) => {
-    if (user) {
-      const updatedUser = {
-        ...user,
-        plan,
-        updatedAt: new Date().toISOString(),
-      };
+  const updateProfile = async (updates: Partial<User>): Promise<void> => {
+    if (!user) return;
+    
+    try {
+      const success = await updateUserProfile(user.id, updates);
       
-      setUser(updatedUser);
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
-    }
-  };
-
-  const updateProfile = (updates: Partial<User>) => {
-    if (user) {
-      const updatedUser = {
-        ...user,
-        ...updates,
-        updatedAt: new Date().toISOString(),
-      };
-      
-      setUser(updatedUser);
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
+      if (success) {
+        setUser(prev => prev ? { ...prev, ...updates } : null);
+      } else {
+        throw new Error('Failed to update profile');
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
     }
   };
 
@@ -158,7 +180,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     register,
-    updatePlan,
+    updateUserPlan,
     updateProfile,
     hasFeature,
     canUseFeature,
@@ -190,16 +212,17 @@ export const useAuthWithFallback = (): AuthContextType => {
       isLoading: false,
       isAuthenticated: false,
       login: async () => { throw new Error('Not in auth context'); },
-      logout: () => {},
+      logout: async () => {},
       register: async () => { throw new Error('Not in auth context'); },
-      updatePlan: () => {},
-      updateProfile: () => {},
+      updateUserPlan: async () => {},
+      updateProfile: async () => {},
       hasFeature: (feature: keyof PlanFeatures) => {
         // Guest users have very limited features
         const guestFeatures: Partial<PlanFeatures> = {
           canExportFDX: false,
           canExportPDF: false,
           canUseAudio: false,
+          canPlayAudio: false,
           canUseAI: false,
           canUseStoryboard: false,
           canCollaborate: false,
@@ -217,6 +240,7 @@ export const useAuthWithFallback = (): AuthContextType => {
           canExportFDX: false,
           canExportPDF: false,
           canUseAudio: false,
+          canPlayAudio: false,
           canUseAI: false,
           canUseStoryboard: false,
           canCollaborate: false,

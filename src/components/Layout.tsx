@@ -116,10 +116,10 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 </div>
               ) : (
                 <Link
-                  to="/pricing"
+                  to="/register"
                   className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
                 >
-                  Upgrade to Pro
+                  Get Started
                 </Link>
               )}
             </div>
@@ -190,11 +190,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                 ) : (
                   <div className="border-t border-gray-200 pt-2">
                     <Link
-                      to="/pricing"
+                      to="/register"
                       className="block bg-blue-600 text-white px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Upgrade to Pro
+                      Get Started
                     </Link>
                   </div>
                 )}
