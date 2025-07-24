@@ -115,20 +115,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                   )}
                 </div>
               ) : (
-                <div className="flex items-center space-x-3">
-                  <Link
-                    to="/login"
-                    className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
-                  >
-                    Get Started
-                  </Link>
-                </div>
+                <Link
+                  to="/pricing"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+                >
+                  Upgrade to Pro
+                </Link>
               )}
             </div>
 
@@ -196,20 +188,13 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
                     </button>
                   </div>
                 ) : (
-                  <div className="border-t border-gray-200 pt-2 space-y-1">
+                  <div className="border-t border-gray-200 pt-2">
                     <Link
-                      to="/login"
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50"
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      Sign In
-                    </Link>
-                    <Link
-                      to="/register"
+                      to="/pricing"
                       className="block bg-blue-600 text-white px-3 py-2 rounded-md text-base font-medium hover:bg-blue-700 transition-colors"
                       onClick={() => setMobileMenuOpen(false)}
                     >
-                      Get Started
+                      Upgrade to Pro
                     </Link>
                   </div>
                 )}
