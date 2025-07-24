@@ -14,23 +14,15 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
   const [userMenuOpen, setUserMenuOpen] = React.useState(false);
 
-  // Different navigation for authenticated vs non-authenticated users
-  const publicNavigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Pricing', href: '/pricing' },
-    { name: 'Blog', href: '/blog' },
-  ];
-
-  const authenticatedNavigation = [
+  // Unified navigation for all users (authentication control handled at route level)
+  const navigation = [
     { name: 'Home', href: '/' },
     { name: 'Dashboard', href: '/dashboard' },
-    { name: 'AI Studio', href: '/studio' },
+    { name: 'Script Generator', href: '/studio' },
     { name: 'Script Doctor', href: '/script-doctor' },
     { name: 'Pricing', href: '/pricing' },
     { name: 'Blog', href: '/blog' },
   ];
-
-  const navigation = auth?.isAuthenticated ? authenticatedNavigation : publicNavigation;
   const isActive = (path: string) => location.pathname === path;
 
   // Close user menu when clicking outside
