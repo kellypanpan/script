@@ -2,6 +2,24 @@ import React from 'react';
 import { Check, Crown, Zap, Building } from 'lucide-react';
 
 const Pricing: React.FC = () => {
+  const handleUpgrade = (planName: string) => {
+    if (planName === 'Pro') {
+      // Redirect to Creem payment link with proper return URLs
+      const baseUrl = window.location.origin;
+      const paymentUrl = 'https://www.creem.io/payment/prod_7Ay46qi3kUwX3LdCEvCw7Y' +
+        `?return_url=${encodeURIComponent(baseUrl + '/payment/success?product_id=prod_7Ay46qi3kUwX3LdCEvCw7Y')}` +
+        `&cancel_url=${encodeURIComponent(baseUrl + '/payment/cancel')}`;
+      
+      window.location.href = paymentUrl;
+    } else if (planName === 'Free') {
+      // For free plan, just redirect to studio
+      window.location.href = '/studio';
+    } else if (planName === 'Studio') {
+      // For studio plan, could redirect to contact or another payment link
+      alert('Please contact sales for Studio plan: hello@readyscriptpro.com');
+    }
+  };
+
   const plans = [
     {
       name: 'Free',
@@ -161,7 +179,10 @@ const Pricing: React.FC = () => {
                   <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
                   <span className="text-gray-600">/{plan.period}</span>
                 </div>
-                <button className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${plan.ctaStyle}`}>
+                <button 
+                  onClick={() => handleUpgrade(plan.name)}
+                  className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${plan.ctaStyle}`}
+                >
                   {plan.cta}
                 </button>
               </div>
@@ -273,10 +294,16 @@ const Pricing: React.FC = () => {
             Join thousands of creators who trust ScriptProShot for their screenplay needs
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
+            <button 
+              onClick={() => handleUpgrade('Pro')}
+              className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            >
               Start Free Trial
             </button>
-            <button className="border-2 border-white/30 text-white px-8 py-3 rounded-lg font-semibold hover:border-white/60 transition-colors">
+            <button 
+              onClick={() => handleUpgrade('Studio')}
+              className="border-2 border-white/30 text-white px-8 py-3 rounded-lg font-semibold hover:border-white/60 transition-colors"
+            >
               Contact Sales
             </button>
           </div>

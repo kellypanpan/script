@@ -12,6 +12,8 @@ import ScriptDoctor from './pages/ScriptDoctor';
 import ScriptStudioNew from './pages/ScriptStudioNew';
 import Dashboard from './pages/Dashboard';
 import Pricing from './pages/Pricing';
+import PaymentSuccess from './pages/PaymentSuccess';
+import PaymentCancel from './pages/PaymentCancel';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 
@@ -24,6 +26,8 @@ function App() {
             {/* Public routes */}
             <Route path="/" element={<Landing />} />
             <Route path="/pricing" element={<Pricing />} />
+            <Route path="/payment/success" element={<PaymentSuccess />} />
+            <Route path="/payment/cancel" element={<PaymentCancel />} />
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             
