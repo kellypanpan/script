@@ -121,7 +121,7 @@ Extra: ${parsed.extra || 'none'}
 Please create an engaging, professional script that matches these requirements and is optimized for ${parsed.platform} format.`;
 
     const ai = await callClaude({
-      model: 'anthropic/claude-sonnet-4',
+      model: 'anthropic/claude-3.5-sonnet',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt },
@@ -175,7 +175,7 @@ Rewrite this scene to be more ${rewriteType === 'improve' ? 'impactful and engag
     `${tone} in tone`}.`;
 
     const ai = await callClaude({
-      model: 'anthropic/claude-sonnet-4',
+      model: 'anthropic/claude-3.5-sonnet',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
@@ -308,7 +308,7 @@ ${focus && focus !== 'all' ? `Focus specifically on: ${focus}` : ''}`;
 
     console.log('🔄 Calling Claude API...');
     const ai = await callClaude({
-      model: 'anthropic/claude-sonnet-4',
+      model: 'anthropic/claude-3.5-sonnet',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
@@ -445,7 +445,7 @@ ${context ? `Context: ${context}` : ''}
 Focus on making it more ${tone || 'professional'} while keeping it appropriate for a ${genre || 'general'} script.`;
 
     const ai = await callClaude({
-      model: 'anthropic/claude-sonnet-4',
+      model: 'anthropic/claude-3.5-sonnet',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
@@ -532,7 +532,7 @@ Please apply the improvement suggestion described above and return the complete 
 
     console.log('🔄 Calling Claude API to apply suggestion...');
     const ai = await callClaude({
-      model: 'anthropic/claude-sonnet-4',
+      model: 'anthropic/claude-3.5-sonnet',
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
