@@ -17,10 +17,16 @@ import {
   TrendingUp,
   Star
 } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 const Landing: React.FC = () => {
   return (
     <div className="bg-white">
+      <SEOHead 
+        title="ReadyScriptPro – AI Script Generator"
+        description="Instantly generate camera-ready scripts for TikTok, YouTube, and short films. Get professional, ready-to-shoot scripts in seconds."
+        canonical="https://readyscriptpro.com/"
+      />
       {/* Hero Section - Redesigned Value Proposition */}
       <section className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-hidden">
         <div className="absolute inset-0 bg-black/30"></div>

@@ -113,7 +113,17 @@
     {
       "source": "/generate",
       "destination": "/studio",
-      "permanent": false
+      "permanent": true
+    },
+    {
+      "source": "/script-generator",
+      "destination": "/studio", 
+      "permanent": true
+    },
+    {
+      "source": "/create",
+      "destination": "/studio",
+      "permanent": true
     }
   ]
 }
