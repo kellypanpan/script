@@ -38,12 +38,12 @@ const Landing: React.FC = () => {
             </div>
             
             <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
-              ReadyScriptPro – AI Script Generator & Video Script Generator
-            </h1>
-            <p className="text-xl sm:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
-              Instantly create scripts for short films, TikTok, and YouTube with our AI Script Generator. The best video script generator for creators and marketers. <br />
-              ReadyScriptPro is an advanced AI Script Generator and Video Script Generator. With our AI Script Generator, you can quickly generate, edit, and optimize scripts for any video platform. Whether you need a video script generator for TikTok, YouTube, or short films, our AI Script Generator delivers professional results in seconds. Try the most powerful AI Script Generator and Video Script Generator today!
-            </p>
+     ReadyScriptPro – AI Script Generator
+   </h1>
+   <p className="text-xl sm:text-2xl text-gray-300 mb-12 max-w-4xl mx-auto leading-relaxed">
+     Instantly generate camera-ready scripts for TikTok, YouTube, and short films.<br />
+     Get professional, ready-to-shoot scripts in seconds.
+   </p>
 
             {/* Dual Entry Design - Based on User Scenarios */}
             <div className="flex flex-col lg:flex-row gap-6 justify-center items-center max-w-4xl mx-auto">
