@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:cloudflare": "vite build && echo 'Cloudflare build completed'",
+    "deploy": "wrangler pages deploy dist",
     "lint": "eslint .",
     "preview": "vite preview",
     "server": "tsx watch server/index.ts"

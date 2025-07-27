@@ -1,4 +1,4 @@
-// Application configuration
+// Application configuration - Cloudflare Optimized
 export const appConfig = {
   // API settings
   api: {
@@ -7,8 +7,8 @@ export const appConfig = {
   
   // Script generation settings
   generation: {
-    // Set to true when API backend is ready
-    useAPI: true, // 启用AI API生成
+    // 强制使用本地生成，确保Cloudflare部署后永远可用
+    useAPI: false, // 禁用AI API生成，使用本地生成
     
     // Local generation delay (ms) for better UX
     localDelay: 800,
