@@ -16,12 +16,6 @@ FRONTEND_URL = "https://readyscriptpro.com"
 # CLAUDE_API_KEY = "your_claude_api_key_here"
 # OPENROUTER_API_KEY = "your_openrouter_api_key_here"
 
-[build]
-command = "npm run build"
-watch_dir = "src"
-
-[build.upload]
-format = "service-worker"
 
 [[redirects]]
 from = "/api/*"
