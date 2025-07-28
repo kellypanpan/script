@@ -2,3 +2,6 @@
 /generate  /studio  301
 /script-generator  /studio  301
 /create  /studio  301
+
+# SPA fallback - must be last
+/*  /index.html  200
