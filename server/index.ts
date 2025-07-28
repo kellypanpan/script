@@ -24,20 +24,33 @@ app.use(express.json({ limit: '2mb' }));
 // Serve static files with correct MIME types
 app.use(express.static('dist', {
   setHeaders: (res, path) => {
-    if (path.endsWith('.js')) {
-      res.setHeader('Content-Type', 'application/javascript');
-    } else if (path.endsWith('.mjs')) {
-      res.setHeader('Content-Type', 'application/javascript');
+    // Force correct MIME types for all JavaScript files
+    if (path.endsWith('.js') || path.endsWith('.mjs')) {
+      res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
     } else if (path.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
+      res.setHeader('Content-Type', 'text/css; charset=utf-8');
     } else if (path.endsWith('.json')) {
-      res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+    } else if (path.endsWith('.html')) {
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    } else if (path.endsWith('.svg')) {
+      res.setHeader('Content-Type', 'image/svg+xml');
+    } else if (path.endsWith('.png')) {
+      res.setHeader('Content-Type', 'image/png');
+    } else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) {
+      res.setHeader('Content-Type', 'image/jpeg');
+    } else if (path.endsWith('.ico')) {
+      res.setHeader('Content-Type', 'image/x-icon');
+    }
+    // Ensure no sniffing for JS files
+    if (path.endsWith('.js') || path.endsWith('.mjs')) {
+      res.setHeader('X-Content-Type-Options', 'nosniff');
     }
   }
 }));
 
 // Security headers
-app.use((req, res, next) => {
+app.use((_req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');
@@ -359,11 +372,23 @@ ${focus && focus !== 'all' ? `Focus specifically on: ${focus}` : ''}`;
       console.log('📋 Attempting to create structured response from text...');
       
       // If JSON parsing fails, create a structured response with better content extraction
-      const suggestions = [];
+      const suggestions: Array<{
+        id: string;
+        type: string;
+        title: string;
+        description: string;
+        severity: string;
+      }> = [];
       
       // Try to extract suggestions from the text
-      const lines = analysisText.split('\n').filter(line => line.trim());
-      let currentSuggestion = null;
+      const lines = analysisText.split('\n').filter((line: string) => line.trim());
+      let currentSuggestion: {
+        id: string;
+        type: string;
+        title: string;
+        description: string;
+        severity: string;
+      } | null = null;
       
       for (const line of lines) {
         if (line.includes('structure') || line.includes('dialogue') || line.includes('pacing') || line.includes('transition')) {
@@ -578,8 +603,13 @@ Please apply the improvement suggestion described above and return the complete 
   }
 });
 
-// Catch-all handler for SPA routing
-app.get('*', (req, res) => {
+// Health check endpoint
+app.get('/health', (_req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Catch-all handler for SPA routing (must be last)
+app.get('*', (_req, res) => {
   res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
 });
 
