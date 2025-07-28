@@ -1,1 +1,4 @@
- 
+/api/*  /api/:splat  200
+/generate  /studio  301
+/script-generator  /studio  301
+/create  /studio  301
