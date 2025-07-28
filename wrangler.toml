@@ -1,21 +1,4 @@
-name = "readyscriptpro"
-compatibility_date = "2024-01-01"
-compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = "dist"
-
-[env.production]
-name = "readyscriptpro"
-route = "readyscriptpro.com/*"
-zone_id = "your_zone_id_here"
-
-[env.production.vars]
-NODE_ENV = "production"
-FRONTEND_URL = "https://readyscriptpro.com"
-
-# 如果需要API功能，取消注释并填入你的API密钥
-# CLAUDE_API_KEY = "your_claude_api_key_here"
-# OPENROUTER_API_KEY = "your_openrouter_api_key_here"
-
 
 [[redirects]]
 from = "/api/*"
