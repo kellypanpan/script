@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
 import { z } from 'zod';
 
 // Load env vars (.env)
@@ -19,6 +20,21 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(express.json({ limit: '2mb' }));
+
+// Serve static files with correct MIME types
+app.use(express.static('dist', {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.mjs')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    } else if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    } else if (path.endsWith('.json')) {
+      res.setHeader('Content-Type', 'application/json');
+    }
+  }
+}));
 
 // Security headers
 app.use((req, res, next) => {
@@ -560,6 +576,11 @@ Please apply the improvement suggestion described above and return the complete 
       timestamp: new Date().toISOString()
     });
   }
+});
+
+// Catch-all handler for SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(process.cwd(), 'dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 4000;
