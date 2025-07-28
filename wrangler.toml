@@ -1,2 +1,21 @@
-name = "readyscriptpro"
 pages_build_output_dir = "dist"
+
+[[redirects]]
+from = "/api/*"
+to = "/api/:splat"
+status = 200
+
+[[redirects]]
+from = "/generate"
+to = "/studio"
+status = 301
+
+[[redirects]]
+from = "/script-generator"
+to = "/studio"
+status = 301
+
+[[redirects]]
+from = "/create"
+to = "/studio"
+status = 301 
