@@ -1,5 +1,2 @@
-name = "readyscriptpro"
+name = "script"
 pages_build_output_dir = "dist"
-
-[build]
-command = "npm run build"

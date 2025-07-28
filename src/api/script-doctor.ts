@@ -37,7 +37,12 @@ export interface ScriptAnalysisResponse {
 // Analyze script using Claude API
 export async function analyzeScript(request: ScriptAnalysisRequest): Promise<ScriptAnalysisResponse> {
   try {
-    const response = await fetch('/api/script-doctor/analyze', {
+    // Use Cloudflare Functions endpoint in production
+    const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? '/api/script-doctor/analyze' 
+      : '/api/script-doctor/analyze';
+    
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -46,22 +51,41 @@ export async function analyzeScript(request: ScriptAnalysisRequest): Promise<Scr
     });
 
     if (!response.ok) {
-      throw new Error(`Analysis failed: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error(`Analysis API error ${response.status}:`, errorText);
+      
+      // Try to parse error response
+      try {
+        const errorData = JSON.parse(errorText);
+        throw new Error(errorData.error || `Analysis failed: ${response.statusText}`);
+      } catch (parseError) {
+        throw new Error(`Analysis failed: ${response.statusText}`);
+      }
     }
 
-    return await response.json();
+    const result = await response.json();
+    
+    // Check if API returned success
+    if (!result.success && result.error) {
+      throw new Error(result.error);
+    }
+    
+    return result;
   } catch (error) {
     console.error('Script analysis error:', error);
-    
-    // Fallback to mock analysis for development
-    return getMockAnalysis(request.script);
+    throw error;
   }
 }
 
 // Rewrite text using Claude API
 export async function rewriteText(request: ScriptRewriteRequest): Promise<ScriptRewriteResponse> {
   try {
-    const response = await fetch('/api/script-doctor/rewrite', {
+    // Use Cloudflare Functions endpoint in production
+    const endpoint = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+      ? '/api/script-doctor/rewrite' 
+      : '/api/script-doctor/rewrite';
+    
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
