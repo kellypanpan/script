@@ -13,5 +13,10 @@ export default defineConfig({
         secure: false
       }
     }
+  },
+  publicDir: 'public',
+  build: {
+    outDir: 'dist',
+    copyPublicDir: true
   }
 });

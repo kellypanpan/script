@@ -1,0 +1,8 @@
+# API redirects to Cloudflare Functions
+/api/generate-script /functions/api/generate-script 200
+/api/script-doctor/analyze /functions/api/script-doctor/analyze 200
+/api/script-doctor/apply-suggestion /functions/api/script-doctor/apply-suggestion 200
+/api/script-doctor/rewrite /functions/api/script-doctor/rewrite 200
+
+# Fallback for other API routes
+/api/* /functions/api/:splat 200
