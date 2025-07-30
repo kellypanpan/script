@@ -17,7 +17,7 @@ export const appConfig = {
     apiTimeout: 30000,
     
     // Fallback to local if API fails
-    fallbackToLocal: true
+    fallbackToLocal: false
   },
   
   // Usage limits
