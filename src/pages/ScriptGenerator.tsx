@@ -234,8 +234,8 @@ const ScriptGenerator: React.FC = () => {
         const response = await fetch(`${appConfig.api.baseUrl}/api/generate-audio`, {
           method: 'POST',
           headers: {
-            'Content-Type: application/json,
-              Authorization: Bearer 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',
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer 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'
           },
           body: JSON.stringify({
             text: scriptForTTS,
@@ -359,27 +359,12 @@ const ScriptGenerator: React.FC = () => {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), appConfig.generation.apiTimeout);
           
-          const response = await fetch(`https://openrouter.ai/api/v1/chat/completions`, {
+          const response = await fetch(`/api/generate-script`, {
             method: 'POST',
             headers: {
-              'Content-Type: application/json,
-              Authorization: Bearer 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',
+              'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-              model: "anthropic/claude-3.5-sonnet",
-              max_tokens: 2000,
-              temperature: 0.7,
-              messages: [
-                {
-                  role: "system",
-                  content: `You are a professional screenwriter. Generate a ${scriptInput.genre} script with ${scriptInput.tone} tone. Include characters: ${scriptInput.characters.join(", ")}. Keywords: ${scriptInput.keywords}. Keep it ${scriptInput.maxLength} length.`
-                },
-                {
-                  role: "user", 
-                  content: `Generate a ${scriptInput.genre} script with ${scriptInput.tone} tone for characters: ${scriptInput.characters.join(", ")}. Keywords: ${scriptInput.keywords}. Make it ${scriptInput.maxLength} length.`
-                }
-              ]
-            }),
+            body: JSON.stringify(scriptInput),
             signal: controller.signal
           });
           
@@ -389,8 +374,8 @@ const ScriptGenerator: React.FC = () => {
           const data = await response.json();
           console.log('📄 Response data:', data);
           
-          if (response.ok if (response.ok && data?.script) {if (response.ok && data?.script) { data?.choices?.[0]?.message?.content) {
-            const rawGeneratedScript = data.choices[0].message.content;
+          if (response.ok && data?.success && data?.script) {
+            const rawGeneratedScript = data.script;
             console.log('✅ API Success! Script length:', rawGeneratedScript.length);
             setRawScript(rawGeneratedScript);
             setGeneratedScript(convertScriptFormat(rawGeneratedScript, outputFormat));
