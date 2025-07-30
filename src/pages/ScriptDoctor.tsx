@@ -23,6 +23,7 @@ import {
 import { useAuthWithFallback } from '../components/AuthProvider';
 import ProjectContext from '../components/ProjectContext';
 import FullscreenEditor from '../components/FullscreenEditor';
+import { SubscriptionModal } from '../components/SubscriptionModal';
 
 interface ScriptSuggestion {
   id: string;
@@ -67,6 +68,9 @@ const ScriptDoctor: React.FC = () => {
   // Apply suggestion state
   const [isApplyingSuggestion, setIsApplyingSuggestion] = useState(false);
   const [appliedSuggestions, setAppliedSuggestions] = useState<Set<string>>(new Set());
+  
+  // Subscription modal state
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   
   // Usage tracking  
   const [dailyUsage, setDailyUsage] = useState(0);
@@ -301,6 +305,11 @@ const ScriptDoctor: React.FC = () => {
       return;
     }
 
+    if (!hasFeature('canApplySuggestions')) {
+      setShowSubscriptionModal(true);
+      return;
+    }
+
     setIsApplyingSuggestion(true);
     
     try {
@@ -312,7 +321,8 @@ const ScriptDoctor: React.FC = () => {
         body: JSON.stringify({
           script: scriptContent,
           suggestion: suggestion,
-          context: `This is a ${currentDraftName} script analysis.`
+          context: `This is a ${currentDraftName} script analysis.`,
+          userPlan: user?.plan || 'free'
         }),
       });
 
@@ -885,11 +895,22 @@ const ScriptDoctor: React.FC = () => {
                             </span>
                             {!appliedSuggestions.has(suggestion.id) && (
                               <button
-                                onClick={() => applySuggestion(suggestion)}
-                                disabled={isApplyingSuggestion}
-                                className="ml-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                onClick={() => {
+                                  if (!hasFeature('canApplySuggestions')) {
+                                    setShowSubscriptionModal(true);
+                                  } else {
+                                    applySuggestion(suggestion);
+                                  }
+                                }}
+                                disabled={isApplyingSuggestion && hasFeature('canApplySuggestions')}
+                                className={`ml-2 px-3 py-1 text-xs rounded transition-colors ${
+                                  hasFeature('canApplySuggestions')
+                                    ? 'bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
+                                    : 'bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 cursor-pointer'
+                                }`}
+                                title={!hasFeature('canApplySuggestions') ? 'Click to upgrade and unlock AI suggestions' : ''}
                               >
-                                {isApplyingSuggestion ? 'Applying...' : 'Apply'}
+                                {isApplyingSuggestion ? 'Applying...' : hasFeature('canApplySuggestions') ? 'Apply' : 'Apply'}
                               </button>
                             )}
                           </div>
@@ -957,6 +978,13 @@ const ScriptDoctor: React.FC = () => {
         placeholder="Your script content will appear here..."
         onSave={saveDraft}
         onExport={exportTXT}
+      />
+
+      {/* Subscription Modal */}
+      <SubscriptionModal
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+        feature="AI Script Suggestions"
       />
     </motion.div>
   );

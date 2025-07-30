@@ -2,13 +2,13 @@
 export const appConfig = {
   // API settings
   api: {
-    baseUrl: 'http://localhost:4000', // Backend server URL
+    baseUrl: '', // Use relative paths for Cloudflare Functions
   },
   
   // Script generation settings
   generation: {
-    // 强制使用本地生成，确保Cloudflare部署后永远可用
-    useAPI: false, // 禁用AI API生成，使用本地生成
+    // 使用真正的AI API生成高质量脚本
+    useAPI: true, // 启用AI API生成
     
     // Local generation delay (ms) for better UX
     localDelay: 800,
