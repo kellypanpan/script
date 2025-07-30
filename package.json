@@ -10,7 +10,7 @@
     "deploy": "npm run build && wrangler pages deploy dist --project-name script",
     "lint": "eslint .",
     "preview": "vite preview",
-    "server": "tsx watch server/index.ts"
+    "server": "node server/simple-server.cjs"
   },
   "dependencies": {
     "@supabase/auth-ui-react": "^0.4.7",

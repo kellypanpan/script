@@ -2,7 +2,7 @@
 export const appConfig = {
   // API settings
   api: {
-    baseUrl: "https://openrouter.ai/api/v1/chat/completions", // 直接使用 OpenRouter API
+    baseUrl: '', // Use relative paths for Cloudflare Functions
   },
   
   // Script generation settings
@@ -17,7 +17,7 @@ export const appConfig = {
     apiTimeout: 30000,
     
     // Fallback to local if API fails
-    fallbackToLocal: true
+    fallbackToLocal: false
   },
   
   // Usage limits
