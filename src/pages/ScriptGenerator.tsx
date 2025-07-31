@@ -236,7 +236,7 @@ const ScriptGenerator: React.FC = () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer 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'
+            'Authorization': `Bearer ${import.meta.env.VITE_OPENROUTER_API_KEY}`
           },
           body: JSON.stringify({
             text: scriptForTTS,
