@@ -360,15 +360,8 @@ const ScriptGenerator: React.FC = () => {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), appConfig.generation.apiTimeout);
           
-          // 获取正确的API端点
-          const getApiEndpoint = () => {
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-              return 'http://localhost:4000/api/generate-script';
-            }
-            return '/api/generate-script';
-          };
-          
-          const apiEndpoint = getApiEndpoint();
+          // 使用 Vite 代理，统一使用相对路径
+          const apiEndpoint = '/api/generate-script';
           console.log('Calling API endpoint:', apiEndpoint);
           
           const response = await fetch(apiEndpoint, {
