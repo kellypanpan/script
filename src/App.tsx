@@ -4,6 +4,7 @@ import { AuthProvider } from './components/AuthProvider';
 import ProtectedRoute, { AuthRequired, GuestOnly } from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import FeedbackWidget from './components/FeedbackWidget';
+import ErrorBoundary from './components/ErrorBoundary';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -19,10 +20,11 @@ import BlogPost from './pages/BlogPost';
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Layout>
-          <Routes>
+    <ErrorBoundary>
+      <Router>
+        <AuthProvider>
+          <Layout>
+            <Routes>
             {/* Public routes */}
             <Route path="/" element={<Landing />} />
             <Route path="/pricing" element={<Pricing />} />
@@ -72,11 +74,12 @@ function App() {
                 </AuthRequired>
               } 
             />
-          </Routes>
-          <FeedbackWidget />
-        </Layout>
-      </AuthProvider>
-    </Router>
+            </Routes>
+            <FeedbackWidget />
+          </Layout>
+        </AuthProvider>
+      </Router>
+    </ErrorBoundary>
   );
 }
 

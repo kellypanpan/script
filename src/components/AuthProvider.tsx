@@ -30,24 +30,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        console.log('Initializing auth...');
         // Get initial session
         const { data: { session } } = await supabase.auth.getSession();
+        console.log('Initial session:', session?.user?.email || 'No session');
         
         if (session?.user) {
           await handleUserSession(session.user);
+        } else {
+          console.log('No active session found');
         }
       } catch (error) {
         console.error('Error initializing auth:', error);
       } finally {
+        console.log('Auth initialization complete, setting loading false');
         setIsLoading(false);
       }
     };
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('Auth state change:', event, session?.user?.email || 'No user');
       if (event === 'SIGNED_IN' && session?.user) {
         await handleUserSession(session.user);
       } else if (event === 'SIGNED_OUT') {
+        console.log('User signed out, clearing user state');
         setUser(null);
       }
     });
@@ -62,10 +69,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Handle user session and profile
   const handleUserSession = async (supabaseUser: SupabaseUser) => {
     try {
+      console.log('Handling user session for:', supabaseUser.email);
       let profile = await getUserProfile(supabaseUser.id);
       
       // Create profile if it doesn't exist
       if (!profile) {
+        console.log('Profile not found, creating new profile...');
         const created = await createUserProfile(supabaseUser);
         if (created) {
           profile = await getUserProfile(supabaseUser.id);
@@ -73,6 +82,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
 
       if (profile) {
+        console.log('Setting user with profile:', profile);
         setUser({
           id: profile.id,
           email: profile.email,
@@ -81,9 +91,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           createdAt: profile.created_at,
           avatar: supabaseUser.user_metadata?.avatar_url || null
         });
+      } else {
+        console.warn('Failed to load or create user profile, setting minimal user data');
+        // Fallback: set user with basic Supabase data if profile operations fail
+        setUser({
+          id: supabaseUser.id,
+          email: supabaseUser.email || '',
+          name: supabaseUser.user_metadata?.name || supabaseUser.email?.split('@')[0] || 'User',
+          plan: 'free',
+          createdAt: supabaseUser.created_at || new Date().toISOString(),
+          avatar: supabaseUser.user_metadata?.avatar_url || null
+        });
       }
     } catch (error) {
       console.error('Error handling user session:', error);
+      // Fallback: set user with basic Supabase data if everything fails
+      setUser({
+        id: supabaseUser.id,
+        email: supabaseUser.email || '',
+        name: supabaseUser.user_metadata?.name || supabaseUser.email?.split('@')[0] || 'User',
+        plan: 'free',
+        createdAt: supabaseUser.created_at || new Date().toISOString(),
+        avatar: supabaseUser.user_metadata?.avatar_url || null
+      });
     }
   };
 

@@ -21,8 +21,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const { user, isLoading, isAuthenticated } = useAuth();
   const location = useLocation();
 
+  console.log('ProtectedRoute check:', { 
+    path: location.pathname, 
+    isLoading, 
+    isAuthenticated, 
+    user: user?.email || 'No user',
+    requireAuth 
+  });
+
   // Show loading state while checking authentication
   if (isLoading) {
+    console.log('ProtectedRoute: Showing loading state');
     return fallback || (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -35,6 +44,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // Redirect to login if authentication is required but user is not authenticated
   if (requireAuth && !isAuthenticated) {
+    console.log('ProtectedRoute: Redirecting to login - not authenticated');
     return (
       <Navigate 
         to={redirectTo} 
@@ -76,6 +86,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // If all checks pass, render the protected content
+  console.log('ProtectedRoute: Rendering protected content');
   return <>{children}</>;
 };
 
