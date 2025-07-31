@@ -25,7 +25,8 @@ import {
   History,
   Sidebar
 } from 'lucide-react';
-import { generateScript } from '../utils/scriptGenerator';
+// 移除本地脚本生成器的导入，强制使用API
+// import { generateScript } from '../utils/scriptGenerator';
 import { analyzeScript, rewriteText } from '../api/script-doctor';
 import { exportScript } from '../utils/pdfExporter';
 import { sampleScripts, getRandomScript } from '../data/sampleScripts';
@@ -494,6 +495,16 @@ const ScriptStudio: React.FC = () => {
   };
 
   // Generate script
+  // 获取正确的API端点
+  const getApiEndpoint = () => {
+    // 在开发环境中使用本地服务器
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      return 'http://localhost:4000/api/generate-script';
+    }
+    // 生产环境使用Cloudflare Functions
+    return '/api/generate-script';
+  };
+
   const handleGenerateScript = async () => {
     if (!scriptInput.genre || (!scriptInput.keywords && scriptInput.characters.length === 0)) {
       alert('Please provide at least a genre and keywords or characters.');
@@ -503,39 +514,69 @@ const ScriptStudio: React.FC = () => {
     setIsGenerating(true);
 
     try {
-      let script;
+      const apiEndpoint = getApiEndpoint();
+      console.log('Calling API endpoint:', apiEndpoint);
       
-      // Try API first, fallback to local generation
-      try {
-        const response = await fetch('http://localhost:4000/api/generate-script', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(scriptInput),
-        });
+      // 统一使用API，不再回退到本地生成
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          genre: scriptInput.genre,
+          keywords: scriptInput.keywords,
+          characters: scriptInput.characters,
+          tone: scriptInput.tone,
+          maxLength: scriptInput.maxLength,
+          mode: outputFormat,
+          platform: scriptInput.platform
+        }),
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          script = data.script;
-        } else {
-          throw new Error('API failed');
-        }
-      } catch (apiError) {
-        console.warn('API failed, using local generation:', apiError);
-        script = generateScript(scriptInput);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `API request failed: ${response.status}`);
       }
 
+      const data = await response.json();
+      if (!data.success || !data.script) {
+        throw new Error(data.error || 'No script content received from API');
+      }
+
+      const script = data.script;
+      console.log('Generated script from API, length:', script.length);
+      
       const formattedScript = convertScriptFormat(script, outputFormat);
       setScriptContent(formattedScript);
       updateScriptStats(formattedScript);
+      
       // Initialize history with generated script
       setScriptHistory([formattedScript]);
       setHistoryIndex(0);
 
-    } catch (error) {
+      // 创建新项目或更新当前项目
+      const projectTitle = scriptInput.keywords ? 
+        `${scriptInput.genre} - ${scriptInput.keywords.slice(0, 30)}` : 
+        `${scriptInput.genre} Script`;
+      
+      const newProject = {
+        id: currentProject?.id || Date.now().toString(),
+        title: currentProject?.title || projectTitle,
+        content: formattedScript,
+        genre: scriptInput.genre,
+        platform: scriptInput.platform,
+        created: currentProject?.created || new Date(),
+        lastEdited: new Date(),
+        wordCount: formattedScript.split(' ').length,
+        version: 1
+      };
+      
+      setCurrentProject(newProject);
+
+    } catch (error: any) {
       console.error('Script generation failed:', error);
-      alert('Failed to generate script. Please try again.');
+      alert(`Failed to generate script: ${error.message}. Please check your connection and try again.`);
     } finally {
       setIsGenerating(false);
     }

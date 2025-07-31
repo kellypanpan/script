@@ -9,7 +9,8 @@ import {
   Wand2,
   AlertCircle
 } from 'lucide-react';
-import { generateScript } from '../utils/scriptGenerator';
+// 移除本地脚本生成器的导入，强制使用API
+// import { generateScript } from '../utils/scriptGenerator';
 // Usage limit disabled
 import { sampleScripts, getRandomScript } from '../data/sampleScripts';
 import appConfig from '../config/app';
@@ -359,7 +360,18 @@ const ScriptGenerator: React.FC = () => {
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), appConfig.generation.apiTimeout);
           
-          const response = await fetch(`/api/generate-script`, {
+          // 获取正确的API端点
+          const getApiEndpoint = () => {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+              return 'http://localhost:4000/api/generate-script';
+            }
+            return '/api/generate-script';
+          };
+          
+          const apiEndpoint = getApiEndpoint();
+          console.log('Calling API endpoint:', apiEndpoint);
+          
+          const response = await fetch(apiEndpoint, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -399,26 +411,12 @@ const ScriptGenerator: React.FC = () => {
           
           console.log('🔍 Error details:', errorMessage);
           
-          if (appConfig.generation.fallbackToLocal) {
-            console.log('🔄 Falling back to local generation...');
-            // 显示一个临时提示，让用户知道正在fallback
-            await new Promise(resolve => setTimeout(resolve, appConfig.generation.localDelay));
-            const script = generateScript(scriptInput);
-            console.log('✅ Local generation success! Script length:', script.length);
-            setRawScript(script);
-            setGeneratedScript(convertScriptFormat(script, outputFormat));
-          } else {
-            throw new Error(`API Error: ${errorMessage}`);
-          }
+          // 不再回退到本地生成，直接抛出错误
+          throw new Error(`API Error: ${errorMessage}`);
         }
       } else {
-        // Local generation (faster)
-        console.log('🏠 Using local generation...');
-        await new Promise(resolve => setTimeout(resolve, appConfig.generation.localDelay));
-        const script = generateScript(scriptInput);
-        console.log('✅ Local generation success! Script length:', script.length);
-        setRawScript(script);
-        setGeneratedScript(convertScriptFormat(script, outputFormat));
+        // 强制使用API，不再支持本地生成
+        throw new Error('API generation is required. Please check your configuration.');
       }
       
       console.log('🎉 Script generation completed successfully!');
