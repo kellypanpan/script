@@ -4,18 +4,20 @@ Allow: /
 # Sitemap
 Sitemap: https://readyscriptpro.com/sitemap.xml
 
-# Disallow private/sensitive pages
-Disallow: /payment/
+# Disallow admin and private areas
 Disallow: /dashboard
+Disallow: /admin
 Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
 
-# Allow important pages for SEO
-Allow: /pricing
-Allow: /studio
+# Allow important pages
+Allow: /ai-script-generator
+Allow: /ai-short-film-script-generator
+Allow: /video-script-generator
+Allow: /ai-screenplay-generator
+Allow: /ai-script-writing-tool
 Allow: /script-doctor
-Allow: /blog/
-Allow: /login
-Allow: /register
-
-# Crawl delay (optional - be respectful to search engines)
-Crawl-delay: 1
+Allow: /studio
+Allow: /pricing
+Allow: /blog
