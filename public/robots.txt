@@ -12,11 +12,6 @@ Disallow: /_next/
 Disallow: /static/
 
 # Allow important pages
-Allow: /ai-script-generator
-Allow: /ai-short-film-script-generator
-Allow: /video-script-generator
-Allow: /ai-screenplay-generator
-Allow: /ai-script-writing-tool
 Allow: /script-doctor
 Allow: /studio
 Allow: /pricing

@@ -27,7 +27,7 @@ import {
   Play,
   Maximize
 } from 'lucide-react';
-import { generateScript } from '../utils/scriptGenerator';
+// import { generateScript } from '../utils/scriptGenerator'; // 移除本地生成器
 import { analyzeScript, rewriteText } from '../api/script-doctor';
 import { exportScript } from '../utils/pdfExporter';
 import { sampleScripts, getRandomScript } from '../data/sampleScripts';
@@ -498,19 +498,43 @@ const ScriptStudioNew: React.FC = () => {
 
     setIsGenerating(true);
     try {
-      const result = generateScript(scriptInput);
-      if (result && result.trim()) {
-        const formattedScript = convertScriptFormat(result, outputFormat);
+      console.log('🎬 Starting AI script generation...');
+      
+      // 调用我们的 API 而不是本地生成器
+      const response = await fetch('/api/generate-script', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          genre: scriptInput.genre,
+          keywords: scriptInput.keywords,
+          characters: scriptInput.characters,
+          tone: scriptInput.tone,
+          maxLength: scriptInput.maxLength,
+          platform: scriptInput.platform
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.status}`);
+      }
+
+      const data = await response.json();
+      
+      if (data.success && data.script) {
+        console.log('✅ AI script generated successfully!');
+        const formattedScript = convertScriptFormat(data.script, outputFormat);
         setScriptContent(formattedScript);
         updateScriptStats(formattedScript);
         addToHistory(formattedScript);
         setLastSaved(new Date());
       } else {
-        alert('Failed to generate script: Empty result');
+        throw new Error(data.error || 'API returned invalid response');
       }
     } catch (error) {
       console.error('Script generation error:', error);
-      alert('Failed to generate script: ' + (error instanceof Error ? error.message : 'Unknown error'));
+      alert('Failed to generate AI script: ' + (error instanceof Error ? error.message : 'Unknown error'));
     } finally {
       setIsGenerating(false);
     }

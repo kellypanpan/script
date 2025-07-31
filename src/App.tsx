@@ -16,12 +16,6 @@ import PaymentSuccess from './pages/PaymentSuccess';
 import PaymentCancel from './pages/PaymentCancel';
 import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
-// SEO Landing Pages
-import AIScriptGenerator from './pages/AIScriptGenerator';
-import AIShortFilmScriptGenerator from './pages/AIShortFilmScriptGenerator';
-import VideoScriptGenerator from './pages/VideoScriptGenerator';
-import AIScreenplayGenerator from './pages/AIScreenplayGenerator';
-import AIScriptWritingTool from './pages/AIScriptWritingTool';
 
 function App() {
   return (
@@ -36,13 +30,6 @@ function App() {
             <Route path="/payment/cancel" element={<PaymentCancel />} />
             <Route path="/blog" element={<BlogList />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
-            
-            {/* SEO Landing Pages */}
-            <Route path="/ai-script-generator" element={<AIScriptGenerator />} />
-            <Route path="/ai-short-film-script-generator" element={<AIShortFilmScriptGenerator />} />
-            <Route path="/video-script-generator" element={<VideoScriptGenerator />} />
-            <Route path="/ai-screenplay-generator" element={<AIScreenplayGenerator />} />
-            <Route path="/ai-script-writing-tool" element={<AIScriptWritingTool />} />
             
             {/* Guest only routes (redirect to dashboard if authenticated) */}
             <Route 
