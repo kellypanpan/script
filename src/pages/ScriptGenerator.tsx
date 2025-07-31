@@ -329,6 +329,7 @@ const ScriptGenerator: React.FC = () => {
   const handleGenerateScript = async () => {
     console.log('🎬 Starting script generation...');
     console.log('Config:', { useAPI: appConfig.generation.useAPI, baseUrl: appConfig.api.baseUrl });
+    alert('Generating AI script with OpenRouter API...');
     
     setIsGenerating(true);
     setIsLoading(true);
