@@ -7,17 +7,18 @@ export const appConfig = {
   
   // Script generation settings
   generation: {
-    // 使用真正的AI API生成高质量脚本
+    // 强制使用AI API生成高质量脚本，不使用本地生成
     useAPI: true, // 启用AI API生成
     
-    // Local generation delay (ms) for better UX
-    localDelay: 800,
+    // 禁用本地生成回退，确保只使用AI
+    fallbackToLocal: false, // 禁用本地回退，强制使用API
     
-    // API timeout (ms) - AI generation can take 15-30 seconds
-    apiTimeout: 30000,
+    // API timeout (ms) - 增加超时时间以适应AI生成
+    apiTimeout: 45000, // 45秒超时
     
-    // Fallback to local if API fails
-    fallbackToLocal: true
+    // 重试配置
+    retryCount: 2,
+    retryDelay: 2000
   },
   
   // Usage limits
