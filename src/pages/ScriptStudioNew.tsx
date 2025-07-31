@@ -188,11 +188,11 @@ const ScriptStudioNew: React.FC = () => {
         .filter(line => line.trim().length < 30)
     ).size;
     
-    // Rough estimation: 150 words per minute for script reading
-    const estimatedMinutes = Math.ceil(words / 150);
-    const estimatedDuration = estimatedMinutes > 0 
-      ? `${Math.floor(estimatedMinutes / 60)}:${(estimatedMinutes % 60).toString().padStart(2, '0')}`
-      : `${Math.ceil(words / 2.5)}s`; // For very short scripts, estimate in seconds
+    // Script duration estimation: roughly 1 page = 1 minute, 250 words = 1 page
+    const estimatedMinutes = words / 250;
+    const estimatedDuration = estimatedMinutes >= 1 
+      ? `${Math.floor(estimatedMinutes)}:${Math.round((estimatedMinutes % 1) * 60).toString().padStart(2, '0')}`
+      : `${Math.round(estimatedMinutes * 60)}s`;
 
     setScriptStats({
       wordCount: words,
@@ -975,7 +975,7 @@ const ScriptStudioNew: React.FC = () => {
                   {isGenerating ? (
                     <>
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                      <span>Generating...</span>
+                      <span>AI is crafting your script...</span>
                     </>
                   ) : (
                     <>
@@ -984,6 +984,35 @@ const ScriptStudioNew: React.FC = () => {
                     </>
                   )}
                 </button>
+                
+                {/* AI Generation Progress Card */}
+                {isGenerating && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-blue-50 border border-blue-200 rounded-lg p-4 space-y-3"
+                  >
+                    <div className="flex items-center space-x-3">
+                      <div className="animate-pulse">
+                        <Sparkles className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-blue-900">AI Script Generation in Progress</div>
+                        <div className="text-xs text-blue-600">This may take 15-30 seconds for best quality</div>
+                      </div>
+                    </div>
+                    
+                    {/* Progress dots */}
+                    <div className="flex items-center space-x-2">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      </div>
+                      <span className="text-xs text-blue-600">Creating professional screenplay formatting...</span>
+                    </div>
+                  </motion.div>
+                )}
                 
                 <button
                   onClick={loadSample}
@@ -1200,7 +1229,7 @@ const ScriptStudioNew: React.FC = () => {
                     <button
                       onClick={() => handleAiRewrite('improve')}
                       disabled={isAiProcessing || !hasFeature('canUseAI')}
-                      className={`w-full px-3 py-2 rounded text-sm transition-colors ${
+                      className={`w-full px-3 py-2 rounded text-sm transition-colors flex items-center justify-center space-x-2 ${
                         !hasFeature('canUseAI') 
                           ? 'bg-gradient-to-r from-orange-400 to-orange-500 text-white cursor-pointer hover:from-orange-500 hover:to-orange-600' 
                           : 'bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50'
@@ -1209,36 +1238,81 @@ const ScriptStudioNew: React.FC = () => {
                       {!hasFeature('canUseAI') 
                         ? '🔒 Upgrade for AI Features' 
                         : isAiProcessing && currentAiAction === 'improve' 
-                          ? 'Improving...' 
-                          : 'Improve'
+                          ? (
+                            <>
+                              <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></div>
+                              <span>AI analyzing text...</span>
+                            </>
+                          )
+                          : 'Improve with AI'
                       }
                     </button>
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         onClick={() => handleAiRewrite('shorten')}
                         disabled={isAiProcessing || !hasFeature('canUseAI')}
-                        className={`px-2 py-1 rounded text-xs transition-colors ${
+                        className={`px-2 py-1 rounded text-xs transition-colors flex items-center justify-center space-x-1 ${
                           !hasFeature('canUseAI')
                             ? 'bg-gray-400 text-gray-200 cursor-pointer'
                             : 'bg-gray-600 text-white hover:bg-gray-700 disabled:opacity-50'
                         }`}
                       >
-                        {!hasFeature('canUseAI') ? '🔒 Pro' : 'Shorten'}
+                        {!hasFeature('canUseAI') ? '🔒 Pro' : 
+                          isAiProcessing && currentAiAction === 'shorten' ? (
+                            <>
+                              <div className="animate-spin rounded-full h-2 w-2 border-b border-white"></div>
+                              <span>Shortening...</span>
+                            </>
+                          ) : 'Shorten'
+                        }
                       </button>
                       <button
                         onClick={() => handleAiRewrite('expand')}
                         disabled={isAiProcessing || !hasFeature('canUseAI')}
-                        className={`px-2 py-1 rounded text-xs transition-colors ${
+                        className={`px-2 py-1 rounded text-xs transition-colors flex items-center justify-center space-x-1 ${
                           !hasFeature('canUseAI')
                             ? 'bg-gray-400 text-gray-200 cursor-pointer'
                             : 'bg-gray-600 text-white hover:bg-gray-700 disabled:opacity-50'
                         }`}
                       >
-                        {!hasFeature('canUseAI') ? '🔒 Pro' : 'Expand'}
+                        {!hasFeature('canUseAI') ? '🔒 Pro' : 
+                          isAiProcessing && currentAiAction === 'expand' ? (
+                            <>
+                              <div className="animate-spin rounded-full h-2 w-2 border-b border-white"></div>
+                              <span>Expanding...</span>
+                            </>
+                          ) : 'Expand'
+                        }
                       </button>
                     </div>
                   </div>
                 </div>
+              )}
+
+              {/* AI Processing Progress Card */}
+              {isAiProcessing && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-purple-50 border border-purple-200 rounded-lg p-3 space-y-2"
+                >
+                  <div className="flex items-center space-x-2">
+                    <div className="animate-pulse">
+                      <Wand2 className="w-4 h-4 text-purple-600" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-medium text-purple-900">
+                        AI {currentAiAction === 'improve' ? 'Improving' : currentAiAction === 'shorten' ? 'Shortening' : 'Expanding'} Your Text
+                      </div>
+                      <div className="text-xs text-purple-600">Analyzing and rewriting selected content...</div>
+                    </div>
+                  </div>
+                  
+                  {/* Animated progress bar */}
+                  <div className="w-full bg-purple-200 rounded-full h-1.5">
+                    <div className="bg-purple-500 h-1.5 rounded-full animate-pulse" style={{width: '70%'}}></div>
+                  </div>
+                </motion.div>
               )}
 
               {/* AI Suggestions */}
@@ -1279,7 +1353,19 @@ const ScriptStudioNew: React.FC = () => {
 
               {/* Script Statistics */}
               <div className="space-y-3">
-                <h4 className="text-sm font-medium text-gray-900">Script Statistics</h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-medium text-gray-900">Script Statistics</h4>
+                  {scriptContent && (
+                    <Link
+                      to="/script-doctor"
+                      state={{ script: scriptContent }}
+                      className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs hover:bg-green-200 transition-colors flex items-center space-x-1"
+                    >
+                      <Sparkles className="w-3 h-3" />
+                      <span>Analyze</span>
+                    </Link>
+                  )}
+                </div>
                 <div className="space-y-2 text-sm text-gray-600">
                   <div className="flex justify-between">
                     <span>Words:</span>
