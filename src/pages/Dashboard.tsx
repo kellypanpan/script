@@ -30,6 +30,7 @@ import {
 import ProjectContext from '../components/ProjectContext';
 import { ScriptProject } from '../types/user';
 import { projectManager } from '../services/projectManager';
+import SEOHead from '../components/SEOHead';
 
 // Extended local interface for Dashboard-specific fields
 interface DashboardProject extends ScriptProject {
@@ -257,6 +258,11 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEOHead 
+        title="Dashboard - ReadyScriptPro"
+        description="Manage your script projects, track your progress, and access your creative workspace. Organize and edit your scripts with professional tools."
+        canonical="https://readyscriptpro.com/dashboard"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Project Context */}
         <ProjectContext />

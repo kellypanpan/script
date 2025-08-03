@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Loader2, XCircle } from 'lucide-react';
 import { useAuth } from '../components/AuthProvider';
+import SEOHead from '../components/SEOHead';
 
 const PaymentSuccess: React.FC = () => {
   const navigate = useNavigate();
@@ -51,6 +52,11 @@ const PaymentSuccess: React.FC = () => {
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <SEOHead 
+          title="Processing Payment - ReadyScriptPro"
+          description="Your payment is being processed. Please wait while we confirm your subscription."
+          canonical="https://readyscriptpro.com/payment/success"
+        />
         <div className="bg-white rounded-2xl shadow-sm p-8 max-w-md w-full mx-4 text-center">
           <Loader2 className="h-16 w-16 text-blue-600 animate-spin mx-auto mb-6" />
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
@@ -67,6 +73,11 @@ const PaymentSuccess: React.FC = () => {
   if (status === 'error') {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <SEOHead 
+          title="Payment Error - ReadyScriptPro"
+          description="There was an error processing your payment. Please try again or contact support."
+          canonical="https://readyscriptpro.com/payment/success"
+        />
         <div className="bg-white rounded-2xl shadow-sm p-8 max-w-md w-full mx-4 text-center">
           <XCircle className="h-16 w-16 text-red-500 mx-auto mb-6" />
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
@@ -96,6 +107,11 @@ const PaymentSuccess: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <SEOHead 
+        title="Payment Successful - ReadyScriptPro"
+        description="Your payment was successful! Your subscription has been activated."
+        canonical="https://readyscriptpro.com/payment/success"
+      />
       <div className="bg-white rounded-2xl shadow-sm p-8 max-w-md w-full mx-4 text-center">
         <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
         <h1 className="text-2xl font-bold text-gray-900 mb-4">

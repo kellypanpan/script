@@ -38,6 +38,7 @@ import ProfessionalScriptEditor from '../components/ProfessionalScriptEditor';
 import VersionHistory from '../components/VersionHistory';
 import LoginPrompt from '../components/LoginPrompt';
 import { VersionHistoryManager } from '../utils/versionHistory';
+import SEOHead from '../components/SEOHead';
 
 interface ScriptGenerationInput {
   genre: string;
@@ -850,7 +851,12 @@ const ScriptStudio: React.FC = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
+    <div className="h-screen bg-gray-900 text-white overflow-hidden">
+      <SEOHead 
+        title="Script Studio - ReadyScriptPro"
+        description="Create professional scripts with AI assistance. Generate, edit, and format scripts for TikTok, YouTube, and short films with advanced tools."
+        canonical="https://readyscriptpro.com/studio"
+      />
       {/* Project Context */}
       <ProjectContext currentProject={currentProject} />
       

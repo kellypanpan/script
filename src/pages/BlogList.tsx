@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Clock, User, Calendar, Filter } from 'lucide-react';
 import { getAllPosts, getAllCategories, BlogPost } from '../utils/blog';
 import LazyImage from '../components/LazyImage';
+import SEOHead from '../components/SEOHead';
 
 export default function BlogList() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
@@ -37,6 +38,11 @@ export default function BlogList() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <SEOHead 
+        title="Script Writing Blog - ReadyScriptPro"
+        description="Learn the craft of screenwriting with expert tips, industry insights, and practical guides from professional writers."
+        canonical="https://readyscriptpro.com/blog"
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">

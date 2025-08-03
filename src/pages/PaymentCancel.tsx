@@ -1,12 +1,18 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { XCircle, ArrowLeft, CreditCard } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 const PaymentCancel: React.FC = () => {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <SEOHead 
+        title="Payment Cancelled - ReadyScriptPro"
+        description="Your payment was cancelled. You can try again or contact support if you need assistance."
+        canonical="https://readyscriptpro.com/payment/cancel"
+      />
       <div className="bg-white rounded-2xl shadow-sm p-8 max-w-md w-full mx-4 text-center">
         <XCircle className="h-16 w-16 text-gray-400 mx-auto mb-6" />
         <h1 className="text-2xl font-bold text-gray-900 mb-4">

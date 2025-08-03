@@ -24,6 +24,7 @@ import { useAuthWithFallback } from '../components/AuthProvider';
 import ProjectContext from '../components/ProjectContext';
 import FullscreenEditor from '../components/FullscreenEditor';
 import { SubscriptionModal } from '../components/SubscriptionModal';
+import SEOHead from '../components/SEOHead';
 
 interface ScriptSuggestion {
   id: string;
@@ -508,6 +509,11 @@ const ScriptDoctor: React.FC = () => {
       transition={{ duration: 0.4 }}
       className="min-h-screen bg-gray-50 py-8"
     >
+      <SEOHead 
+        title="Script Doctor - ReadyScriptPro"
+        description="Improve your scripts with AI analysis and suggestions. Get professional feedback on structure, dialogue, pacing, and transitions."
+        canonical="https://readyscriptpro.com/script-doctor"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Project Context */}
         <ProjectContext />

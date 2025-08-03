@@ -4,6 +4,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { supabase } from '../lib/supabase';
 import { Sparkles } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 const Register: React.FC = () => {
   const navigate = useNavigate();
@@ -19,7 +20,12 @@ const Register: React.FC = () => {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <SEOHead 
+        title="Register - ReadyScriptPro"
+        description="Create your ReadyScriptPro account and start generating professional scripts with AI assistance."
+        canonical="https://readyscriptpro.com/register"
+      />
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">

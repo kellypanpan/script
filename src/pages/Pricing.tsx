@@ -1,5 +1,6 @@
 import React from 'react';
 import { Check, Crown, Zap, Building } from 'lucide-react';
+import SEOHead from '../components/SEOHead';
 
 const Pricing: React.FC = () => {
   const handleUpgrade = (planName: string) => {
@@ -137,7 +138,12 @@ const Pricing: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12">
+    <div className="min-h-screen bg-gray-50">
+      <SEOHead 
+        title="Pricing - ReadyScriptPro"
+        description="Choose the perfect plan for your script writing needs. Free, Pro, and Studio plans available with unlimited scripts and professional features."
+        canonical="https://readyscriptpro.com/pricing"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-16">
