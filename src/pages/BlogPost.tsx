@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 // @ts-ignore react-markdown types installed in prod build
 import ReactMarkdown from 'react-markdown';
 import { getPostBySlug } from '../utils/blog';
-import SEOHead from '../components/SEOHead';
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -13,11 +12,6 @@ export default function BlogPost() {
   if (!post) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4">
-        <SEOHead 
-          title="Post Not Found - ReadyScriptPro"
-          description="The requested blog post could not be found."
-          canonical="https://readyscriptpro.com/blog/not-found"
-        />
         <p className="text-center text-red-500">Post not found.</p>
       </div>
     );
@@ -25,11 +19,6 @@ export default function BlogPost() {
 
   return (
     <div className="max-w-3xl mx-auto py-12 px-4 prose prose-lg prose-blue dark:prose-invert">
-      <SEOHead 
-        title={`${post.title} - ReadyScriptPro Blog`}
-        description={post.excerpt || post.content.substring(0, 160)}
-        canonical={`https://readyscriptpro.com/blog/${slug}`}
-      />
       <h1>{post.title}</h1>
       <p className="text-sm text-gray-500">{new Date(post.date).toDateString()}</p>
       {post.image && (
