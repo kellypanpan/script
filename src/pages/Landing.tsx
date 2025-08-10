@@ -20,12 +20,34 @@ import {
 import SEOHead from '../components/SEOHead';
 
 const Landing: React.FC = () => {
+  const orgJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    url: 'https://readyscriptpro.com/',
+    name: 'ReadyScriptPro',
+    logo: 'https://readyscriptpro.com/images/og-image.png',
+    sameAs: ['https://twitter.com/ReadyScriptPro']
+  };
+
+  const siteJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    url: 'https://readyscriptpro.com/',
+    name: 'ReadyScriptPro',
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://readyscriptpro.com/search?q={query}',
+      'query-input': 'required name=query'
+    }
+  };
+
   return (
     <div className="bg-white">
       <SEOHead 
         title="ReadyScriptPro – AI Script Generator"
         description="Instantly generate camera-ready scripts for TikTok, YouTube, and short films. Get professional, ready-to-shoot scripts in seconds."
         canonical="https://readyscriptpro.com/"
+        jsonLd={[orgJsonLd, siteJsonLd]}
       />
       {/* Hero Section - Redesigned Value Proposition */}
       <section className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white overflow-hidden">
@@ -81,7 +103,7 @@ const Landing: React.FC = () => {
                   </div>
                   <div className="text-left">
                     <div className="text-lg font-bold">Improve Existing Scripts</div>
-                    <div className="text-sm text-green-100">AI screenwriter diagnosis & professional suggestions</div>
+                    <div className="text-sm text-blue-100">AI-powered rewrite, analysis, and polishing</div>
                   </div>
                 </div>
                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />

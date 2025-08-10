@@ -7,6 +7,7 @@ interface SEOHeadProps {
   keywords?: string;
   canonical?: string;
   ogImage?: string;
+  jsonLd?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const SEOHead: React.FC<SEOHeadProps> = ({
@@ -14,7 +15,8 @@ const SEOHead: React.FC<SEOHeadProps> = ({
   description = 'Instantly generate camera-ready scripts for TikTok, YouTube, and short films. Get professional, ready-to-shoot scripts in seconds.',
   keywords = 'AI script generator, short film scripts, TikTok scripts, YouTube scripts, screenplay generator',
   canonical,
-  ogImage = 'https://readyscriptpro.com/images/og-image.png'
+  ogImage = 'https://readyscriptpro.com/images/og-image.png',
+  jsonLd
 }) => {
   const location = useLocation();
   const baseUrl = 'https://readyscriptpro.com';
@@ -42,8 +44,17 @@ const SEOHead: React.FC<SEOHeadProps> = ({
     }
     metaDescription.setAttribute('content', description);
 
-    // Update Open Graph tags
-    const ogTags = {
+    // Update keywords (optional)
+    let metaKeywords = document.querySelector('meta[name="keywords"]');
+    if (!metaKeywords) {
+      metaKeywords = document.createElement('meta');
+      metaKeywords.setAttribute('name', 'keywords');
+      document.head.appendChild(metaKeywords);
+    }
+    metaKeywords.setAttribute('content', keywords);
+
+    // Update Open Graph and Twitter tags
+    const ogTags: Record<string, string> = {
       'og:title': title,
       'og:description': description,
       'og:url': canonicalUrl,
@@ -67,7 +78,27 @@ const SEOHead: React.FC<SEOHeadProps> = ({
       }
       metaTag.setAttribute('content', content);
     });
-  }, [title, description, canonicalUrl, ogImage]);
+
+    // Inject JSON-LD structured data if provided
+    // Remove any previous injected json-ld nodes by this component
+    const prevJsonLdNodes = document.querySelectorAll('script[type="application/ld+json"][data-seo-jsonld="1"]');
+    prevJsonLdNodes.forEach((n) => n.parentNode?.removeChild(n));
+
+    if (jsonLd) {
+      const jsonArray = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+      jsonArray.forEach((obj) => {
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.setAttribute('data-seo-jsonld', '1');
+        try {
+          script.text = JSON.stringify(obj);
+        } catch {
+          // ignore serialization error silently
+        }
+        document.head.appendChild(script);
+      });
+    }
+  }, [title, description, keywords, canonicalUrl, ogImage, jsonLd]);
 
   return null;
 };
